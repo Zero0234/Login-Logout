@@ -1,5 +1,6 @@
 from django.db import models
 from django.core.exceptions import ValidationError
+from django.core.validators import RegexValidator
 
 class NetlabLog(models.Model):
     # Updated choices: Just Student and Guest
@@ -8,12 +9,22 @@ class NetlabLog(models.Model):
         ('GUEST', 'Guest'),
     ]
 
+    numeric_validator = RegexValidator(
+        regex=r'^\d+$',
+        message='ID Number must contain only numbers.'
+    )
     name = models.CharField(max_length=150, help_text="Full name of the user.")
     role = models.CharField(max_length=20, choices=ROLE_CHOICES, default='STUDENT')
     
     # We leave this blank=True, null=True here so the form doesn't block Guests
     # The actual requirement logic is handled in the clean() method below.
-    id_number = models.CharField(max_length=50, blank=True, null=True, help_text="Required for Students. Leave blank for Guests.")
+    id_number = models.CharField(
+        max_length=50, 
+        blank=True, 
+        null=True, 
+        validators=[numeric_validator],
+        help_text="Required for Students (Numbers only). Leave blank for Guests."
+    )
     
     timestamp = models.DateTimeField(auto_now_add=True)
 
