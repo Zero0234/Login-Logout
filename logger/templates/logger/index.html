@@ -1,0 +1,38 @@
+<form method="POST">
+    {% csrf_token %}
+    
+    <h3>Who is entering the Netlab?</h3>
+    
+    <div class="role-buttons">
+        <label>
+            <input type="radio" name="role" value="STUDENT" onclick="toggleFields('student')" checked> Student
+        </label>
+        <label>
+            <input type="radio" name="role" value="GUEST" onclick="toggleFields('guest')"> Guest
+        </label>
+    </div>
+
+    <input type="text" name="name" placeholder="Full Name" required>
+
+    <div id="id-section">
+        <input type="text" name="id_number" id="id_field" placeholder="Student ID Number" required>
+    </div>
+
+    <button type="submit">Login</button>
+</form>
+
+<script>
+    function toggleFields(role) {
+        const idSection = document.getElementById('id-section');
+        const idField = document.getElementById('id_field');
+        
+        if (role === 'guest') {
+            idSection.style.display = 'none';
+            idField.required = false;
+            idField.value = ""; // Clear it if they switched
+        } else {
+            idSection.style.display = 'block';
+            idField.required = true;
+        }
+    }
+</script>
