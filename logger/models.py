@@ -16,12 +16,12 @@ class NetlabLog(models.Model):
     )
     
     name = models.CharField(max_length=150, help_text="Full name of the user.")
-    role = models.CharField(max_length=20, choices=ROLE_CHOICES, default='STUDENT')
+    role = models.CharField(choices=ROLE_CHOICES, default='STUDENT')
     
     # We leave this blank=True, null=True here so the form doesn't block Guests
     # The actual requirement logic is handled in the clean() method below.
     id_number = models.CharField(
-        max_length=50, 
+        max_length=8, 
         blank=True, 
         null=True, 
         validators=[numeric_validator],
