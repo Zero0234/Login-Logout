@@ -2,20 +2,28 @@ from django.db import models
 from django.core.exceptions import ValidationError
 from django.core.validators import RegexValidator
 
+
+alpha_only = RegexValidator(r'^[a-zA-Z ]*$', 'Only letters and spaces are allowed.')
+
+    # Updated validator: Only numbers, maximum of 10 digits allowed
+numeric_validator = RegexValidator(
+    regex=r'^\d{8}$', 
+    message='ID Number must contain only numbers and be up to 8 digits long.'
+)
+
 class NetlabLog(models.Model):
     # Updated choices: Just Student and Guest
     ROLE_CHOICES = [
         ('STUDENT', 'Student'),
         ('GUEST', 'Guest'),
     ]
-
-    # Updated validator: Only numbers, maximum of 10 digits allowed
-    numeric_validator = RegexValidator(
-        regex=r'^\d{8}$', 
-        message='ID Number must contain only numbers and be up to 8 digits long.'
+    
+    name = models.CharField(
+        max_length=150, 
+        validators=[alpha_only],
+        help_text="Full name of the user."
     )
     
-    name = models.CharField(max_length=150, help_text="Full name of the user.")
     role = models.CharField(choices=ROLE_CHOICES, default='STUDENT')
     
     # We leave this blank=True, null=True here so the form doesn't block Guests

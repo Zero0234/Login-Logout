@@ -8,8 +8,6 @@
         {% endfor %}
     </div>
 {% endif %}
-
-<form method="POST">
 ...
 <form method="POST">
     {% csrf_token %}
@@ -25,7 +23,7 @@
         </label>
     </div>
 
-    <input type="text" name="name" placeholder="Full Name" required>
+    <input type="text" inputmode="text" name="name" placeholder="Full Name" required>
 
     <div id="id-section">
         <input type="text" inputmode="numeric" pattern="[0-9]*" max_length="8" name="id_number" id="id_field" placeholder="Student ID Number">
