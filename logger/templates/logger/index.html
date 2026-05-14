@@ -1,3 +1,16 @@
+
+{% if messages %}
+    <div style="margin-bottom: 20px; padding: 10px; border-radius: 5px; text-align: center;">
+        {% for message in messages %}
+            <h4 style="color: {% if message.tags == 'error' %}red{% else %}green{% endif %};">
+                {{ message }}
+            </h4>
+        {% endfor %}
+    </div>
+{% endif %}
+
+<form method="POST">
+...
 <form method="POST">
     {% csrf_token %}
     
@@ -15,7 +28,7 @@
     <input type="text" name="name" placeholder="Full Name" required>
 
     <div id="id-section">
-        <input type="text" inputmode="numeric" pattern="[0-9]*" name="id_number" id="id_field" placeholder="Student ID Number">
+        <input type="text" inputmode="numeric" pattern="[0-9]*" max_length="8" name="id_number" id="id_field" placeholder="Student ID Number">
     </div>
 
     <button type="submit">Login</button>

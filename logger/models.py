@@ -9,10 +9,12 @@ class NetlabLog(models.Model):
         ('GUEST', 'Guest'),
     ]
 
+    # Updated validator: Only numbers, maximum of 10 digits allowed
     numeric_validator = RegexValidator(
-        regex=r'^\d+$',
-        message='ID Number must contain only numbers.'
+        regex=r'^\d{8}$', 
+        message='ID Number must contain only numbers and be up to 8 digits long.'
     )
+    
     name = models.CharField(max_length=150, help_text="Full name of the user.")
     role = models.CharField(max_length=20, choices=ROLE_CHOICES, default='STUDENT')
     
