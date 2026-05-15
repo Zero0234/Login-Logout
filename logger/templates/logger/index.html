@@ -20,11 +20,28 @@
 <body>
 
 {% if messages %}
+    <div id="msg-container" style="margin-bottom: 20px; padding: 10px; border-radius: 5px; text-align: center;">
+        {% for message in messages %}
+            <h4 style="color: {% if message.tags == 'error' %}red{% else %}green{% endif %};">
+                {{ message }}
+            </h4>
+        {% endfor %}
+    </div>
+{% else %}
+    <div id="msg-container" style="margin-bottom: 20px; padding: 10px; border-radius: 5px; text-align: center; display: none;">
+        <h4 id="js-message" style="color: red;"></h4>
+    </div>
+{% endif %}
+
+{% if messages %}
     <div style="text-align: center; position: fixed; top: 20px; width: 100%; z-index: 10000;">
         {% for message in messages %}
             {% if "error" in message.tags %}
                 <h4 style="color: #ff4d4d; background: rgba(0,0,0,0.6); display: inline-block; padding: 10px 20px; border-radius: 8px;">{{ message }}</h4>
             {% endif %}
+            <div id="msg-container" style="margin-bottom: 20px; padding: 10px; border-radius: 5px; text-align: center; display: none;">
+        <h4 id="js-message" style="color: red;"></h4>
+    </div>
         {% endfor %}
     </div>
 {% endif %}
@@ -127,22 +144,41 @@
     function verifyEntry() {
         const idInput = document.getElementById('id_field').value;
         const selectedRole = document.querySelector('input[name="role"]:checked').value;
+        const msgContainer = document.getElementById('msg-container');
+        const jsMessage = document.getElementById('js-message');
 
+        // Reset client-side messages on every click
+        if (jsMessage) {
+            jsMessage.innerText = "";
+            if (msgContainer && !{% if messages %}true{% else %}false{% endif %}) {
+                msgContainer.style.display = 'none';
+            }
+        }
+
+        // GUEST: Submit immediately
         if (selectedRole === 'GUEST') {
             const nameInput = document.getElementById('name_field').value;
             if (!nameInput) {
-                alert("Please enter your name.");
+                showJsError("Please enter your name.");
                 return;
             }
             document.getElementById('main-form').submit();
             return;
         }
 
+        // STUDENT: Client-side Validation Checks
         if (!idInput) {
-            alert("Please enter your Student ID.");
+            showJsError("Please enter your Student ID.");
             return;
         }
 
+        // Check if the ID contains letters using a quick Regex match
+        if (/[a-zA-Z]/.test(idInput)) {
+            showJsError("ID Number must contain only numbers.");
+            return;
+        }
+
+        // If text looks numeric, proceed to check the database master list
         fetch(`/lookup/?id_number=${idInput}`)
             .then(response => response.json())
             .then(data => {
@@ -150,29 +186,37 @@
                     document.getElementById('pulled_name').innerText = data.name;
                     document.getElementById('studentModal').style.display = 'flex';
                 } else {
-                    alert("Student ID not found in the master list.");
+                    showJsError("Student ID not found in the master list.");
                 }
             })
             .catch(error => {
                 console.error('Error:', error);
-                alert("An error occurred. Please check the server.");
+                showJsError("An error occurred. Please check the server.");
             });
     }
 
-    // 4. Modal Buttons Actions
-    function confirmStudent() {
-        document.getElementById('main-form').submit();
+    function showJsError(messageText) {
+    const msgContainer = document.getElementById('msg-container');
+    const jsMessage = document.getElementById('js-message');
+    
+    if (jsMessage && msgContainer) {
+        jsMessage.innerText = messageText;
+        jsMessage.style.color = 'red';
+        msgContainer.style.display = 'block';
+        msgContainer.style.background = '#f8d7da'; // Subtle red background tint
     }
+}
 
     function closeStudentModal() {
         document.getElementById('studentModal').style.display = 'none';
         document.getElementById('id_field').value = "";
         document.getElementById('id_field').focus();
-    }
-
-    // New Action to close the Success Modal
-    function closeSuccessModal() {
-        document.getElementById('successModal').style.display = 'none';
+    
+        // Clear any leftover messages when closing
+        const msgContainer = document.getElementById('msg-container');
+        if (msgContainer && !{% if messages %}true{% else %}false{% endif %}) {
+            msgContainer.style.display = 'none';
+        }
     }
 </script>
 </body>
