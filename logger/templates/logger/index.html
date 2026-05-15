@@ -1,4 +1,3 @@
-
 {% if messages %}
     <div style="margin-bottom: 20px; padding: 10px; border-radius: 5px; text-align: center;">
         {% for message in messages %}
@@ -8,8 +7,8 @@
         {% endfor %}
     </div>
 {% endif %}
-...
-<form method="POST">
+
+<form id="main-form" method="POST">
     {% csrf_token %}
     
     <h3>Who is entering the Netlab?</h3>
@@ -23,27 +22,105 @@
         </label>
     </div>
 
-    <input type="text" inputmode="text" name="name" placeholder="Full Name" required>
-
-    <div id="id-section">
-        <input type="text" inputmode="numeric" pattern="[0-9]*" max_length="8" name="id_number" id="id_field" placeholder="Student ID Number">
+    <div id="name-section">
+        <input type="text" inputmode="text" name="name" id="name_field" placeholder="Full Name">
     </div>
 
-    <button type="submit">Login</button>
+    <div id="id-section">
+        <input type="text" inputmode="numeric" pattern="[0-9]*" maxlength="8" name="id_number" id="id_field" placeholder="Student ID Number">
+    </div>
+
+    <button type="button" onclick="verifyEntry()">Login</button>
 </form>
 
+<div id="studentModal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.7); z-index:9999; align-items:center; justify-content:center;">
+    <div style="background:white; padding:30px; border-radius:15px; text-align:center; min-width:300px; box-shadow: 0px 4px 15px rgba(0,0,0,0.3);">
+        <h3 style="margin-top:0; color:#555;">Is this your name?</h3>
+        <h1 id="pulled_name" style="color:#2c3e50; margin:20px 0;"></h1>
+        
+        <div style="display:flex; justify-content:space-around; margin-top:20px;">
+            <button type="button" onclick="confirmStudent()" style="background:#28a745; color:white; border:none; padding:10px 30px; border-radius:5px; cursor:pointer; font-weight:bold;">YES</button>
+            <button type="button" onclick="closeStudentModal()" style="background:#dc3545; color:white; border:none; padding:10px 30px; border-radius:5px; cursor:pointer; font-weight:bold;">NO</button>
+        </div>
+    </div>
+</div>
+
 <script>
+    // 1. Handle Field Toggling (Student vs Guest)
     function toggleFields(role) {
         const idSection = document.getElementById('id-section');
+        const nameSection = document.getElementById('name-section');
         const idField = document.getElementById('id_field');
-        
+        const nameField = document.getElementById('name_field');
+
         if (role === 'guest') {
             idSection.style.display = 'none';
             idField.required = false;
-            idField.value = ""; // Clear it if they switched
+            nameSection.style.display = 'block';
+            nameField.required = true;
+            idField.value = ""; 
         } else {
             idSection.style.display = 'block';
             idField.required = true;
+            nameSection.style.display = 'none';
+            nameField.required = false;
+            nameField.value = "";
         }
+    }
+
+    // 2. Initial Setup on Page Load
+    window.onload = function() {
+        toggleFields('student');
+    };
+
+    // 3. Verification Logic
+    function verifyEntry() {
+        const idInput = document.getElementById('id_field').value;
+        const selectedRole = document.querySelector('input[name="role"]:checked').value;
+
+        // GUEST: Submit immediately
+        if (selectedRole === 'GUEST') {
+            const nameInput = document.getElementById('name_field').value;
+            if (!nameInput) {
+                alert("Please enter your name.");
+                return;
+            }
+            document.getElementById('main-form').submit();
+            return;
+        }
+
+        // STUDENT: Check ID in database first
+        if (!idInput) {
+            alert("Please enter your Student ID.");
+            return;
+        }
+
+        fetch(`/lookup/?id_number=${idInput}`)
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    // Success: Show the Modal with the pulled name
+                    document.getElementById('pulled_name').innerText = data.name;
+                    document.getElementById('studentModal').style.display = 'flex';
+                } else {
+                    // Fail: Alert the user
+                    alert("Student ID not found in the master list.");
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert("An error occurred. Please check the server.");
+            });
+    }
+
+    // 4. Modal Buttons Actions
+    function confirmStudent() {
+        document.getElementById('main-form').submit();
+    }
+
+    function closeStudentModal() {
+        document.getElementById('studentModal').style.display = 'none';
+        document.getElementById('id_field').value = "";
+        document.getElementById('id_field').focus();
     }
 </script>

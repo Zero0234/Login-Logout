@@ -2,17 +2,36 @@ from django.db import models
 from django.core.exceptions import ValidationError
 from django.core.validators import RegexValidator
 
-
 alpha_only = RegexValidator(r'^[a-zA-Z ]*$', 'Only letters and spaces are allowed.')
 
-    # Updated validator: Only numbers, maximum of 10 digits allowed
 numeric_validator = RegexValidator(
     regex=r'^\d{8}$', 
     message='ID Number must contain only numbers and be up to 8 digits long.'
 )
 
+class LearnerProfile(models.Model):
+    # unique=True ensures no two learners can have the same ID
+    id_number = models.CharField(
+        max_length=50, 
+        unique=True, 
+        validators=[numeric_validator],
+        help_text="The official Learner ID Number."
+    )
+    full_name = models.CharField(
+        max_length=150, 
+        validators=[alpha_only],
+        help_text="The official Full Name of the Learner."
+    )
+
+    class Meta:
+        verbose_name = "Learner Profile"
+        verbose_name_plural = "Learner Profiles"
+        ordering = ['id_number']
+
+    def __str__(self):
+        return f"{self.id_number} - {self.full_name}"
+    
 class NetlabLog(models.Model):
-    # Updated choices: Just Student and Guest
     ROLE_CHOICES = [
         ('STUDENT', 'Student'),
         ('GUEST', 'Guest'),
@@ -25,9 +44,6 @@ class NetlabLog(models.Model):
     )
     
     role = models.CharField(choices=ROLE_CHOICES, default='STUDENT')
-    
-    # We leave this blank=True, null=True here so the form doesn't block Guests
-    # The actual requirement logic is handled in the clean() method below.
     id_number = models.CharField(
         max_length=8, 
         blank=True, 
