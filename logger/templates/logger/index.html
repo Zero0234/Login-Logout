@@ -1,38 +1,58 @@
+{% load static %}
+<!DOCTYPE html>
+<html>
+<head>
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+    <style>
+        body {
+            background: radial-gradient(circle at center, #87CEEB 0%, #0061ff 100%);
+            background-attachment: fixed;
+            min-height: 100vh;
+            margin: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: sans-serif;
+            font-size: 22px;
+        }
+    </style>
+</head>
+<body>
+
 {% if messages %}
-    <div style="margin-bottom: 20px; padding: 10px; border-radius: 5px; text-align: center;">
+    <div style="text-align: center; position: fixed; top: 20px; width: 100%; z-index: 10000;">
         {% for message in messages %}
-            <h4 style="color: {% if message.tags == 'error' %}red{% else %}green{% endif %};">
-                {{ message }}
-            </h4>
+            {% if "error" in message.tags %}
+                <h4 style="color: #ff4d4d; background: rgba(0,0,0,0.6); display: inline-block; padding: 10px 20px; border-radius: 8px;">{{ message }}</h4>
+            {% endif %}
         {% endfor %}
     </div>
 {% endif %}
 
-<form id="main-form" method="POST">
-    {% csrf_token %}
-    
-    <h3>Who is entering the Netlab?</h3>
-    
-    <div class="role-buttons">
-        <label>
-            <input type="radio" name="role" value="STUDENT" onclick="toggleFields('student')" checked> Student
-        </label>
-        <label>
-            <input type="radio" name="role" value="GUEST" onclick="toggleFields('guest')"> Guest
-        </label>
-    </div>
+<div class="glass-card">
+    <form id="main-form" method="POST">
+        {% csrf_token %}
+        
+        <h3>Who is entering the Netlab?</h3>
+        
+        <div class="role-buttons">
+            <label><input type="radio" name="role" value="STUDENT" onclick="toggleFields('student')" checked> Student</label>
+            <label><input type="radio" name="role" value="GUEST" onclick="toggleFields('guest')"> Guest</label>
+        </div>
 
-    <div id="name-section">
-        <input type="text" inputmode="text" name="name" id="name_field" placeholder="Full Name">
-    </div>
+        <div id="name-section">
+            <input type="text" name="name" id="name_field" placeholder="Full Name">
+        </div>
 
-    <div id="id-section">
-        <input type="text" inputmode="numeric" pattern="[0-9]*" maxlength="8" name="id_number" id="id_field" placeholder="Student ID Number">
-    </div>
+        <div id="id-section">
+            <input type="text" name="id_number" id="id_field" placeholder="Student ID Number">
+        </div>
 
-    <button type="button" onclick="verifyEntry()">Login</button>
-</form>
+        <button type="button" onclick="verifyEntry()">Login</button>
+    </form>
+</div>
 
+<!-- MODAL 1: YOUR EXISTING STUDENT VERIFICATION MODAL -->
 <div id="studentModal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.7); z-index:9999; align-items:center; justify-content:center;">
     <div style="background:white; padding:30px; border-radius:15px; text-align:center; min-width:300px; box-shadow: 0px 4px 15px rgba(0,0,0,0.3);">
         <h3 style="margin-top:0; color:#555;">Is this your name?</h3>
@@ -42,6 +62,20 @@
             <button type="button" onclick="confirmStudent()" style="background:#28a745; color:white; border:none; padding:10px 30px; border-radius:5px; cursor:pointer; font-weight:bold;">YES</button>
             <button type="button" onclick="closeStudentModal()" style="background:#dc3545; color:white; border:none; padding:10px 30px; border-radius:5px; cursor:pointer; font-weight:bold;">NO</button>
         </div>
+    </div>
+</div>
+
+<!-- NEW MODAL 2: SUCCESS POPUP MODAL -->
+<div id="successModal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.6); z-index:9999; align-items:center; justify-content:center;">
+    <div style="background:white; padding:30px; border-radius:15px; text-align:center; min-width:350px; box-shadow: 0px 10px 25px rgba(0,0,0,0.4); border-top: 8px solid #28a745;">
+        <!-- Success Icon Accent -->
+        <div style="font-size: 50px; color: #28a745; margin-bottom: 10px;">✓</div>
+        <h2 style="margin: 0 0 15px 0; color: #2c3e50;">Success!</h2>
+        
+        <!-- Target element where Django injection lands -->
+        <p id="success_message_text" style="color: #555; font-size: 18px; margin-bottom: 25px; font-weight: normal;"></p>
+        
+        <button type="button" onclick="closeSuccessModal()" style="background:#28a745; color:white; border:none; padding:12px 40px; border-radius:5px; cursor:pointer; font-weight:bold; font-size: 16px;">OK</button>
     </div>
 </div>
 
@@ -68,9 +102,25 @@
         }
     }
 
-    // 2. Initial Setup on Page Load
+    // 2. Updated Setup on Page Load to capture Django Success Messages
     window.onload = function() {
         toggleFields('student');
+
+        // Capture success messages safely into a variable using Django syntax
+        let successMessage = "";
+        {% if messages %}
+            {% for message in messages %}
+                {% if "success" in message.tags %}
+                    successMessage = "{{ message|escapejs }}";
+                {% endif %}
+            {% endfor %}
+        {% endif %}
+
+        // If a message was loaded from the backend post-submission, display the success modal
+        if (successMessage !== "") {
+            document.getElementById('success_message_text').innerText = successMessage;
+            document.getElementById('successModal').style.display = 'flex';
+        }
     };
 
     // 3. Verification Logic
@@ -78,7 +128,6 @@
         const idInput = document.getElementById('id_field').value;
         const selectedRole = document.querySelector('input[name="role"]:checked').value;
 
-        // GUEST: Submit immediately
         if (selectedRole === 'GUEST') {
             const nameInput = document.getElementById('name_field').value;
             if (!nameInput) {
@@ -89,7 +138,6 @@
             return;
         }
 
-        // STUDENT: Check ID in database first
         if (!idInput) {
             alert("Please enter your Student ID.");
             return;
@@ -99,11 +147,9 @@
             .then(response => response.json())
             .then(data => {
                 if (data.success) {
-                    // Success: Show the Modal with the pulled name
                     document.getElementById('pulled_name').innerText = data.name;
                     document.getElementById('studentModal').style.display = 'flex';
                 } else {
-                    // Fail: Alert the user
                     alert("Student ID not found in the master list.");
                 }
             })
@@ -123,4 +169,11 @@
         document.getElementById('id_field').value = "";
         document.getElementById('id_field').focus();
     }
+
+    // New Action to close the Success Modal
+    function closeSuccessModal() {
+        document.getElementById('successModal').style.display = 'none';
+    }
 </script>
+</body>
+</html>
