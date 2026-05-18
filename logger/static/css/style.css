@@ -153,13 +153,11 @@ body {
 .btn-ok { background: #28a745; padding: 12px 40px; font-size: 16px; }
 
 .brand-text {
-  font-size: 7vw; /* Fluid typography that scales with screen size */
+  font-size: 7vw;
   font-weight: 500;
   text-transform: uppercase;
   letter-spacing: 0.05em;
   white-space: nowrap;
-  
-  /* White with ~70% opacity allows the background colors to bleed through beautifully */
   color: rgba(255, 255, 255, 0.68); 
   user-select: none;
 }
@@ -172,7 +170,7 @@ body {
 }
 .right-text {
   position: fixed;
-  bottom: 550px;
+  bottom: 350px;
   right: 0vw;
   transform: rotate(-90deg);
   transform-origin: bottom right;

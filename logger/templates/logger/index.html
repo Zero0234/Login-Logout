@@ -24,7 +24,7 @@
     <form id="main-form" method="POST">
         {% csrf_token %}
         
-        <h3>Who is entering the Netlab?</h3>
+        <h3>Netlab Login</h3>
         
         <div class="role-buttons">
             <label><input type="radio" name="role" value="STUDENT" onclick="toggleFields('student')" {% if selected_role != 'GUEST' %}checked{% endif %}> Student</label>
