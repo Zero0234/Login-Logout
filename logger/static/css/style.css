@@ -1,47 +1,155 @@
+/* =========================================
+   BASE BODY STYLING
+   ========================================= */
+body {
+    background: radial-gradient(circle at center, #87CEEB 0%, #0061ff 100%);
+    background-attachment: fixed;
+    min-height: 100vh;
+    margin: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: sans-serif;
+    font-size: 22px;
+}
+
+/* =========================================
+   GLASS CARD COMPONENT
+   ========================================= */
 .glass-card {
-  width: 320px;
-  height: 300px;
-  padding: 40px;
-  margin: 50px auto;
-  background: rgba(255, 255, 255, 0.13);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
-  border-radius: 20px;
-  border: 1px solid rgba(255, 255, 255, 0.3);
-  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
-  position: relative;
-  overflow: hidden;
-  color: white;
-  text-align: center;
-  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    width: 320px;
+    height: 300px;
+    padding: 40px;
+    margin: 50px auto;
+    background: rgba(255, 255, 255, 0.13);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border-radius: 20px;
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+    position: relative;
+    overflow: hidden;
+    color: white;
+    text-align: center;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 }
 
 .glass-card::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  height: 1px;
-  background: linear-gradient(
-    90deg,
-    transparent,
-    rgba(255, 255, 255, 0.8),
-    transparent
-  );
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.8), transparent);
 }
 
 .glass-card::after {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 1px;
-  height: 100%;
-  background: linear-gradient(
-    180deg,
-    rgba(255, 255, 255, 0.8),
-    transparent,
-    rgba(255, 255, 255, 0.3)
-  );
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 1px;
+    height: 100%;
+    background: linear-gradient(180deg, rgba(255, 255, 255, 0.8), transparent, rgba(255, 255, 255, 0.3));
 }
+
+/* =========================================
+   ERROR MESSAGES (TOP CENTER)
+   ========================================= */
+#unified-msg-container {
+    position: fixed;
+    top: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 10000;
+    text-align: center;
+    width: 100%;
+    pointer-events: none;
+}
+
+.server-error, #js-message {
+    color: #ff4d4d;
+    background: rgba(0,0,0,0.8);
+    padding: 10px 20px;
+    border-radius: 8px;
+    font-weight: bold;
+    pointer-events: auto;
+}
+
+.server-error {
+    display: inline-block;
+    margin-bottom: 5px;
+}
+
+#js-message {
+    display: none;
+    width: max-content;
+    margin: 0 auto;
+}
+
+/* =========================================
+   MODAL OVERLAYS (BACKGROUND DIMMING)
+   ========================================= */
+.modal-overlay {
+    display: none; /* Changed to 'flex' by JS */
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0,0,0,0.7);
+    z-index: 9999;
+    align-items: center;
+    justify-content: center;
+}
+
+.modal-overlay.success-bg {
+    background: rgba(0,0,0,0.6);
+}
+
+/* =========================================
+   MODAL CARDS (THE WHITE BOXES)
+   ========================================= */
+.modal-card {
+    background: white;
+    padding: 30px;
+    border-radius: 15px;
+    text-align: center;
+    min-width: 300px;
+    box-shadow: 0px 4px 15px rgba(0,0,0,0.3);
+}
+
+.modal-card.success-card {
+    min-width: 350px;
+    border-top: 8px solid #28a745;
+    box-shadow: 0px 10px 25px rgba(0,0,0,0.4);
+}
+
+/* Modal Typography */
+.modal-title { margin-top: 0; color: #555; }
+.modal-name { color: #2c3e50; margin: 20px 0; }
+.success-icon { font-size: 50px; color: #28a745; margin-bottom: 10px; }
+.success-title { margin: 0 0 15px 0; color: #2c3e50; }
+.success-text { color: #555; font-size: 18px; margin-bottom: 25px; font-weight: normal; }
+
+/* =========================================
+   MODAL BUTTONS
+   ========================================= */
+.modal-actions {
+    display: flex;
+    justify-content: space-around;
+    margin-top: 20px;
+}
+
+.btn {
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-weight: bold;
+    color: white;
+}
+
+.btn-yes { background: #28a745; padding: 10px 30px; }
+.btn-no { background: #dc3545; padding: 10px 30px; }
+.btn-ok { background: #28a745; padding: 12px 40px; font-size: 16px; }
