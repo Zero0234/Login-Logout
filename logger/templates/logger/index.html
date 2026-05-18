@@ -77,24 +77,27 @@
 </div>
 
 <script>
-    // --- NEW: Handle "Enter" Key Submission ---
+    // --- Handle "Enter" Key Submission ---
     document.getElementById('main-form').addEventListener('keydown', function(event) {
         if (event.key === 'Enter') {
-            event.preventDefault(); // Stop default form submit
-            verifyEntry(); // Run our custom validation instead
+            event.preventDefault(); 
+            verifyEntry(); 
         }
     });
 
-    function toggleFields(role) {
+    // 1. Added 'isInitialLoad' to prevent wiping out Django server errors on page refresh
+    function toggleFields(role, isInitialLoad = false) {
         const idSection = document.getElementById('id-section');
         const nameSection = document.getElementById('name-section');
         const idField = document.getElementById('id_field');
         const nameField = document.getElementById('name_field');
         const jsMessage = document.getElementById('js-message');
 
-        // Clear ANY errors when switching tabs
-        if (jsMessage) jsMessage.style.display = 'none';
-        document.querySelectorAll('.server-error').forEach(msg => msg.style.display = 'none');
+        // ONLY clear errors if the user is actively clicking to switch tabs manually
+        if (!isInitialLoad) {
+            if (jsMessage) jsMessage.style.display = 'none';
+            document.querySelectorAll('.server-error').forEach(msg => msg.style.display = 'none');
+        }
 
         if (role === 'guest' || role === 'GUEST') {
             idSection.style.display = 'none';
@@ -110,9 +113,9 @@
     }
 
     window.onload = function() {
-        // Initialize based on Django context
+        // Pass 'true' so it knows this is the first load and leaves the errors alone!
         const selectedRole = "{{ selected_role|default:'STUDENT' }}".toLowerCase();
-        toggleFields(selectedRole);
+        toggleFields(selectedRole, true);
 
         let successMessage = "";
         {% if messages %}
@@ -141,6 +144,11 @@
             const nameInput = document.getElementById('name_field').value;
             if (!nameInput) {
                 showJsError("Please enter your name.");
+                return;
+            }
+            // --- NEW: Instant frontend check for numbers in the Guest Name ---
+            if (/[0-9]/.test(nameInput)) {
+                showJsError("Only letters and spaces are allowed.");
                 return;
             }
             document.getElementById('main-form').submit();
@@ -179,7 +187,6 @@
         jsMessage.style.display = 'block';
     }
 
-    // --- RESTORED MISSING FUNCTIONS ---
     function confirmStudent() {
         document.getElementById('main-form').submit();
     }
