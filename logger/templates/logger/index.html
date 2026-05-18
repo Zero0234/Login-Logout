@@ -17,11 +17,12 @@
     <div id="js-message"></div>
 </div>
 
-<div class="glass-card">
+<div class="card">
     <form id="main-form" method="POST">
         {% csrf_token %}
         
-        <h3>Who is entering the Netlab?</h3>
+        <h3>NETLAB LOGIN</h3>
+        <h2>Columban College Inc.</h2>
         
         <div class="role-buttons">
             <label><input type="radio" name="role" value="STUDENT" onclick="toggleFields('student')" {% if selected_role != 'GUEST' %}checked{% endif %}> Student</label>
