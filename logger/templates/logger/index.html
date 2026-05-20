@@ -21,6 +21,8 @@
     <form id="main-form" method="POST">
         {% csrf_token %}
         
+        <input type="hidden" name="purpose" id="purpose_field" value="">
+
         <h3>INTERNET LAB</h3>
         <h2>Columban College Inc.</h2>
         
@@ -56,15 +58,20 @@
     </form>
 </div>
 
-<div id="studentModal" class="modal-overlay">
-    <div class="modal-card">
-        <h3 class="modal-title">Is this your name?</h3>
-        <h1 id="pulled_name" class="modal-name"></h1>
+<div id="purposeModal" class="modal-overlay">
+    <div class="modal-card" style="min-width: 400px;">
+        <h3 class="modal-title">Welcome, <span id="pulled_name" style="color: #0061ff;"></span>!</h3>
+        <p style="color: #555; margin-bottom: 20px; font-size: 18px;">What is your purpose today?</p>
         
-        <div class="modal-actions">
-            <button type="button" onclick="confirmStudent()" class="btn btn-yes">YES</button>
-            <button type="button" onclick="closeStudentModal()" class="btn btn-no">NO</button>
+        <div class="modal-actions" style="display: flex; flex-wrap: wrap; gap: 10px; justify-content: center;">
+            <button type="button" onclick="submitPurpose('Internet')" class="btn" style="background: #0061ff; padding: 12px 20px; flex: 1 1 30%;">Internet</button>
+            <button type="button" onclick="submitPurpose('Print')" class="btn" style="background: #0061ff; padding: 12px 20px; flex: 1 1 30%;">Print</button>
+            <button type="button" onclick="submitPurpose('Computer')" class="btn" style="background: #0061ff; padding: 12px 20px; flex: 1 1 30%;">Computer</button>
+            <button type="button" onclick="submitPurpose('Lounge')" class="btn" style="background: #0061ff; padding: 12px 20px; flex: 1 1 30%;">Lounge</button>
+            <button type="button" onclick="submitPurpose('Other')" class="btn" style="background: #6c757d; padding: 12px 20px; flex: 1 1 30%;">Other</button>
         </div>
+        
+        <button type="button" onclick="closePurposeModal()" class="btn btn-no" style="margin-top: 25px; width: 100%;">Cancel</button>
     </div>
 </div>
 
@@ -185,7 +192,10 @@
                 showJsError("Only letters and spaces are allowed.");
                 return;
             }
-            document.getElementById('main-form').submit();
+            
+            // NEW: Show the Purpose Modal instead of submitting directly
+            document.getElementById('pulled_name').innerText = nameInput + " (Guest)";
+            document.getElementById('purposeModal').style.display = 'flex';
             return;
         }
 
@@ -213,7 +223,8 @@
             .then(data => {
                 if (data.success) {
                     document.getElementById('pulled_name').innerText = data.name;
-                    document.getElementById('studentModal').style.display = 'flex';
+                    // CHANGED: Open the purpose selection modal instead of the old student confirmation modal
+                    document.getElementById('purposeModal').style.display = 'flex';
                 } else {
                     // ID not found: Populate the readonly ID field and show Register Modal
                     document.getElementById('reg_id_field').value = idInput;
@@ -249,12 +260,17 @@
         jsMessage.style.display = 'block';
     }
 
-    function confirmStudent() {
+    // NEW: Handles purpose selection button clicks
+    function submitPurpose(purposeValue) {
+        // Assign the selected value to the hidden input inside your form
+        document.getElementById('purpose_field').value = purposeValue;
+        // Submit the parent form
         document.getElementById('main-form').submit();
     }
 
-    function closeStudentModal() {
-        document.getElementById('studentModal').style.display = 'none';
+    // NEW: Closes the purpose selection modal safely
+    function closePurposeModal() {
+        document.getElementById('purposeModal').style.display = 'none';
         document.getElementById('id_field').value = "";
         document.getElementById('id_field').focus();
     }
@@ -308,8 +324,12 @@
         .then(data => {
             if (data.success) {
                 closeRegisterModal();
-                // Since they are now registered, submit the main login form!
-                document.getElementById('main-form').submit();
+                
+                // OPTIMIZATION: Instead of dropping them straight into a blind form submission, 
+                // pull up the Purpose modal for them right away since they are now registered!
+                document.getElementById('pulled_name').innerText = name;
+                document.getElementById('id_field').value = idNum; // Keep the ID field consistent
+                document.getElementById('purposeModal').style.display = 'flex';
             } else {
                 showJsError(data.error);
             }

@@ -16,7 +16,7 @@ class LearnerProfileAdmin(ImportExportModelAdmin):
 # Our existing Daily Log configuration
 @admin.register(NetlabLog)
 class NetlabLogAdmin(admin.ModelAdmin):
-    list_display = ('name', 'role', 'id_number', 'get_department_upper', 'timestamp')
+    list_display = ('name', 'role', 'id_number', 'get_department_upper', 'purpose', 'timestamp')
     list_filter = ('role', 'timestamp')
     search_fields = ('name', 'id_number')
     readonly_fields = ('timestamp',)

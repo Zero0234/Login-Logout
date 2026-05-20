@@ -15,6 +15,7 @@ def log_entry(request):
         id_number = request.POST.get('id_number', '').strip()
         name_from_form = request.POST.get('name', '')
         department_from_form = request.POST.get('department', 'CCS')
+        purpose_selected = request.POST.get('purpose', '')
 
         # Remember what the user typed so we don't reset their screen on an error
         context['selected_role'] = role
@@ -32,7 +33,8 @@ def log_entry(request):
                         name=student_profile.full_name, 
                         role='STUDENT', 
                         id_number=id_number,
-                        department=student_profile.department
+                        department=student_profile.department,
+                        purpose=purpose_selected
                     )
                     messages.success(request, f"Thank you, {student_profile.full_name}! Entry recorded.")
                     context = {'selected_role': 'STUDENT'} # Reset on success
@@ -46,7 +48,7 @@ def log_entry(request):
                         name=name_from_form, 
                         role='GUEST',
                         department=department_from_form
-                    )
+                    , purpose=purpose_selected)
                     messages.success(request, f"Welcome, {name_from_form}!")
                     context = {'selected_role': 'STUDENT'} # Reset on success
                 else:

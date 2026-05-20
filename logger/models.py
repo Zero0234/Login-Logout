@@ -64,6 +64,14 @@ class NetlabLog(models.Model):
         help_text="Required for Students (Numbers only). Leave blank for Guests."
     )
 
+    purpose = models.CharField(
+        max_length=50, 
+        blank=True, 
+        null=True,
+        help_text="The purpose of the visit (e.g., Internet, Print)."
+    )
+    
+
     department = models.CharField(
         max_length=10,
         choices=Department.choices,
