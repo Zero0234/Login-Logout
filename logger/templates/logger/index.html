@@ -17,6 +17,10 @@
     <div id="js-message"></div>
 </div>
 
+<a href="#" class="corner-logo-container">
+    <img src="{% static 'css/Columban Logo (1).png' %}" alt="Columban College Logo">
+</a>
+
 <div class="card">
     <form id="main-form" method="POST">
         {% csrf_token %}
@@ -63,12 +67,12 @@
         <h3 class="modal-title">Welcome, <span id="pulled_name" style="color: #0061ff;"></span>!</h3>
         <p style="color: #555; margin-bottom: 20px; font-size: 18px;">What is your purpose today?</p>
         
-        <div class="modal-actions" style="display: flex; flex-wrap: wrap; gap: 10px; justify-content: center;">
-            <button type="button" onclick="submitPurpose('Internet')" class="btn" style="background: #0061ff; padding: 12px 20px; flex: 1 1 30%;">Internet</button>
-            <button type="button" onclick="submitPurpose('Print')" class="btn" style="background: #0061ff; padding: 12px 20px; flex: 1 1 30%;">Print</button>
-            <button type="button" onclick="submitPurpose('Computer')" class="btn" style="background: #0061ff; padding: 12px 20px; flex: 1 1 30%;">Computer</button>
-            <button type="button" onclick="submitPurpose('Lounge')" class="btn" style="background: #0061ff; padding: 12px 20px; flex: 1 1 30%;">Lounge</button>
-            <button type="button" onclick="submitPurpose('Other')" class="btn" style="background: #6c757d; padding: 12px 20px; flex: 1 1 30%;">Other</button>
+        <div class="modal-actions">
+            <button type="button" onclick="submitPurpose('Internet')" class="btn btn-primary">Internet</button>
+            <button type="button" onclick="submitPurpose('Print')" class="btn btn-primary">Print</button>
+            <button type="button" onclick="submitPurpose('Computer')" class="btn btn-primary">Computer</button>
+            <button type="button" onclick="submitPurpose('Lounge')" class="btn btn-primary">Lounge</button>
+            <button type="button" onclick="submitPurpose('Other')" class="btn btn-secondary">Other</button>
         </div>
         
         <button type="button" onclick="closePurposeModal()" class="btn btn-no" style="margin-top: 25px; width: 100%;">Cancel</button>
@@ -194,7 +198,7 @@
             }
             
             // NEW: Show the Purpose Modal instead of submitting directly
-            document.getElementById('pulled_name').innerText = nameInput + " (Guest)";
+            document.getElementById('pulled_name').innerText = nameInput;
             document.getElementById('purposeModal').style.display = 'flex';
             return;
         }

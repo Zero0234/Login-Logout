@@ -24,7 +24,7 @@ body {
    ========================================= */
 .card {
     width: 500px;
-    height: 450px;
+    height: 470px;
     padding: 30px;
     margin: 40px auto;
     background: rgb(255, 255, 255);
@@ -83,9 +83,9 @@ body {
     transition: transform 0.2s, opacity 0.2s;
 
     background: linear-gradient(
-        90deg,
-        rgb(30, 175, 211) 0%,
-        rgb(6, 52, 104) 100%
+        135deg,
+        rgb(93, 224, 230) 0%,
+        rgb(0, 74, 173) 100%
     );
 }
 
@@ -198,9 +198,9 @@ body {
     transition: transform 0.2s, opacity 0.2s;
 
     background: linear-gradient(
-        90deg,
-        rgb(30, 175, 211) 0%,
-        rgb(6, 52, 104) 100%
+        135deg,
+        rgb(93, 224, 230) 0%,
+        rgb(0, 74, 173) 100%
     );
 }
 
@@ -264,6 +264,54 @@ body {
 }
 
 /* =========================================
+   FORCED 2-COLUMN MODAL ACTIONS GRID
+   ========================================= */
+.modal-actions {
+    display: grid !important;
+    grid-template-columns: repeat(2, 1fr) !important; 
+    gap: 12px !important;                
+    width: 100% !important;
+    max-width: 100% !important;
+    box-sizing: border-box !important;
+    margin-top: 20px !important;
+    padding: 0 10px !important;
+}
+
+.modal-actions .btn {
+    padding: 12px 10px !important;
+    font-size: 15px !important;
+    font-weight: 600 !important;
+    color: #ffffff !important;
+    border: none !important;
+    border-radius: 6px !important;
+    cursor: pointer !important;
+    text-align: center !important;
+    width: 100% !important;
+    box-sizing: border-box !important;
+    display: block !important; /* Forces them to stop acting like inline-blocks */
+    transition: background-color 0.2s, transform 0.1s;
+}
+
+/* Blue Buttons */
+.modal-actions .btn-primary {
+    background-color: #0061ff !important;
+}
+
+.modal-actions .btn-primary:hover {
+    background-color: #004ecc !important;
+}
+
+/* Grey "Other" Button */
+.modal-actions .btn-secondary {
+    background-color: #6c757d !important;
+    grid-column: span 2 !important; /* Forces it to stretch across the bottom row */
+}
+
+.modal-actions .btn-secondary:hover {
+    background-color: #5a6268 !important;
+}
+
+/* =========================================
    MODAL CARDS (THE WHITE BOXES)
    ========================================= */
 .modal-card {
@@ -303,6 +351,29 @@ body {
     cursor: pointer;
     font-weight: bold;
     color: white;
+}
+
+.corner-logo-container {
+    position: fixed;      /* Locks it in place relative to the browser window */
+    bottom: 20px;         /* 20px gap from the bottom edge */
+    right: 20px;          /* 20px gap from the right edge */
+    z-index: 1000;        /* Ensures it sits cleanly above your background shapes */
+    opacity: 0.85;        /* Makes it blend subtly with the design */
+    transition: transform 0.3s ease, opacity 0.3s ease;
+}
+
+/* Styles the actual logo image inside the container */
+.corner-logo-container img {
+    width: 100px;          /* Clean, non-intrusive desktop size */
+    height: auto;         /* Maintains perfect aspect ratio proportions */
+    display: block;       /* Eliminates default browser inline tracking gaps */
+    filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.15)); /* Adds a sleek modern depth shadow */
+}
+
+/* Sleek hover interaction */
+.corner-logo-container:hover {
+    opacity: 1;           /* Lights up fully when you hover over it */
+    transform: scale(1.05); /* Adds a crisp, minimal pop-out zoom effect */
 }
 
 .btn-yes { background: #28a745; padding: 10px 30px; }
