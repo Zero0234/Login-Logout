@@ -21,11 +21,7 @@
     <form id="main-form" method="POST">
         {% csrf_token %}
         
-<<<<<<< HEAD
-        <h3>NETLAB LOGIN</h3>
-=======
-        <h3>Internet Lab</h3>
->>>>>>> b32f47c09c1b98d1537af192302521d547d161bb
+        <h3>INTERNET LAB</h3>
         <h2>Columban College Inc.</h2>
         
         <div class="role-buttons">
@@ -38,7 +34,22 @@
         </div>
 
         <div id="id-section">
-            <input type="text" name="id_number" id="id_field" placeholder="Student ID Number" value="{{ id_val }}">
+            <input type="text" name="id_number" id="id_field" placeholder="Student ID Number" minlength="8" mazlength="8" value="{{ id_val }}">
+        </div>
+
+        <div id="department-section">
+            <p class="dept-label">Department: <span id="selected-dept-text">CCS</span></p>
+    
+            <div class="dept-button-group">
+                <button type="button" class="dept-btn active" onclick="selectDepartment('CCS')">CCS</button>
+                <button type="button" class="dept-btn" onclick="selectDepartment('CASED')">CASED</button>
+                <button type="button" class="dept-btn" onclick="selectDepartment('CON')">CON</button>
+                <button type="button" class="dept-btn" onclick="selectDepartment('COE')">COE</button>
+                <button type="button" class="dept-btn" onclick="selectDepartment('COA')">COA</button>
+                <button type="button" class="dept-btn" onclick="selectDepartment('CBA')">CBA</button>
+            </div>
+
+            <input type="hidden" name="department" id="id_department" value="CCS">
         </div>
 
         <button id="login-button" type="button" onclick="verifyEntry()">Login</button>
@@ -105,6 +116,7 @@
     function toggleFields(role, isInitialLoad = false) {
         const idSection = document.getElementById('id-section');
         const nameSection = document.getElementById('name-section');
+        const departmentSection = document.getElementById('department-section');
         const idField = document.getElementById('id_field');
         const nameField = document.getElementById('name_field');
         const jsMessage = document.getElementById('js-message');
@@ -118,13 +130,19 @@
         if (role === 'guest' || role === 'GUEST') {
             idSection.style.display = 'none';
             idField.required = false;
+
             nameSection.style.display = 'block';
             nameField.required = true;
+
+            if (departmentSection) departmentSection.style.display = 'none';
         } else {
             idSection.style.display = 'block';
             idField.required = true;
+
             nameSection.style.display = 'none';
             nameField.required = false;
+
+            if (departmentSection) departmentSection.style.display = 'block';
         }
     }
 
@@ -149,9 +167,9 @@
     };
 
     function verifyEntry() {
-        const idInput = document.getElementById('id_field').value;
+        const idInput = document.getElementById('id_field').value.trim(); // Added .trim() to handle spaces safely
         const selectedRole = document.querySelector('input[name="role"]:checked').value;
-        
+    
         // Clear previous errors on new click
         document.getElementById('js-message').style.display = 'none';
         document.querySelectorAll('.server-error').forEach(msg => msg.style.display = 'none');
@@ -181,6 +199,15 @@
             return;
         }
 
+        // ==========================================================
+        // NEW STRICT CHECKPOINT: Locks length to exactly 8 digits
+        // ==========================================================
+        if (idInput.length !== 8) {
+            showJsError("ID Number must be exactly 8 digits long.");
+            return; // Halts execution here so the modals never pop up!
+        }
+
+        // Runs your original endpoint lookup safely now that length is validated!
         fetch(`/lookup/?id_number=${idInput}`)
             .then(response => response.json())
             .then(data => {
@@ -197,6 +224,23 @@
                 console.error('Error:', error);
                 showJsError("An error occurred. Please check the server.");
             });
+    }
+
+    function selectDepartment(deptCode) {
+        // 1. Update the value of our hidden form field
+        document.getElementById('id_department').value = deptCode;
+    
+        // 2. Update the text indicator label above the buttons
+        document.getElementById('selected-dept-text').innerText = deptCode;
+    
+        // 3. Remove the 'active' highlight class from all department buttons
+        document.querySelectorAll('.dept-btn').forEach(btn => {
+            btn.classList.remove('active');
+        });
+    
+        // 4. Add the 'active' highlight class to the specific button clicked
+        // Finding the exact button by checking its text contents
+        Array.from(document.querySelectorAll('.dept-btn')).find(btn => btn.innerText === deptCode).classList.add('active');
     }
 
     function showJsError(messageText) {

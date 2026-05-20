@@ -12,8 +12,9 @@ def log_entry(request):
 
     if request.method == 'POST':
         role = request.POST.get('role').upper()  # 'STUDENT' or 'GUEST'
-        id_number = request.POST.get('id_number', '')
+        id_number = request.POST.get('id_number', '').strip()
         name_from_form = request.POST.get('name', '')
+        department_from_form = request.POST.get('department', 'CCS')
 
         # Remember what the user typed so we don't reset their screen on an error
         context['selected_role'] = role
@@ -22,12 +23,16 @@ def log_entry(request):
 
         try:
             if role == 'STUDENT':
+                if not id_number.isdigit() or len(id_number) != 8:
+                    raise ValidationError({'id_number': 'ID Number must contain only numbers and be exactly 8 digits long.'})
+                
                 student_profile = LearnerProfile.objects.filter(id_number=id_number).first()
                 if student_profile:
                     NetlabLog.objects.create(
                         name=student_profile.full_name, 
                         role='STUDENT', 
-                        id_number=id_number
+                        id_number=id_number,
+                        department=student_profile.department
                     )
                     messages.success(request, f"Thank you, {student_profile.full_name}! Entry recorded.")
                     context = {'selected_role': 'STUDENT'} # Reset on success
@@ -37,15 +42,23 @@ def log_entry(request):
             else:
                 # Guest Logic
                 if name_from_form:
-                    NetlabLog.objects.create(name=name_from_form, role='GUEST')
+                    NetlabLog.objects.create(
+                        name=name_from_form, 
+                        role='GUEST',
+                        department=department_from_form
+                    )
                     messages.success(request, f"Welcome, {name_from_form}!")
                     context = {'selected_role': 'STUDENT'} # Reset on success
                 else:
                     messages.error(request, "Name is required for Guests.")
                     
         except ValidationError as e:
-            for field, errors in e.message_dict.items():
-                for error in errors:
+            if hasattr(e, 'message_dict'):
+                for field, errors in e.message_dict.items():
+                    for error in errors:
+                        messages.error(request, f"{error}")
+            else:
+                for error in e.messages:
                     messages.error(request, f"{error}")
 
     return render(request, 'logger/index.html', context)
@@ -63,21 +76,19 @@ def register_learner_ajax(request):
     try:
         data = json.loads(request.body)
         
-        # Create the instance
         new_learner = LearnerProfile(
-            id_number=data.get('id_number'),
+            id_number=str(data.get('id_number', '')).strip(),
             full_name=data.get('full_name'),
             department=data.get('department')
         )
         
-        # full_clean() enforces your RegexValidators before saving
         new_learner.full_clean() 
         new_learner.save()
-        
         return JsonResponse({'success': True})
         
     except ValidationError as e:
-        # Returns the specific model validation errors (e.g. wrong ID format)
-        return JsonResponse({'success': False, 'error': "Validation Error: Check your inputs."})
+        # Pulls the exact message string out of your model's numeric_validator
+        error_message = e.message_dict.get('id_number', ["Validation Error: Check your inputs."])[0]
+        return JsonResponse({'success': False, 'error': error_message})
     except Exception as e:
         return JsonResponse({'success': False, 'error': "An unexpected error occurred."})

@@ -9,13 +9,15 @@ numeric_validator = RegexValidator(
     message='ID Number must contain only numbers and be up to 8 digits long.'
 )
 
-class LearnerProfile(models.Model):
-    DEPARTMENT_CHOICES = [
-        ('CCS', 'CCS'),
-        ('CASED', 'CASED'),
-        ('CBA', 'CBA'),
-    ]
+class Department(models.TextChoices):
+    CCS = 'CCS'
+    CBA = 'CBA'
+    COE = 'COE'
+    CASED = 'CASED'
+    CON = 'CON'
+    COA = 'COA'
 
+class LearnerProfile(models.Model):
     id_number = models.CharField(
         max_length=8, 
         unique=True, 
@@ -28,10 +30,9 @@ class LearnerProfile(models.Model):
         help_text="The official Full Name of the Learner."
     )
     department = models.CharField(
-        max_length=5,
-        choices=DEPARTMENT_CHOICES,
-        default='CCS',
-        help_text="The department of the Learner."
+        max_length=10,
+        choices=Department.choices,
+        default=Department.CCS
     )
 
     class Meta:
@@ -62,7 +63,15 @@ class NetlabLog(models.Model):
         validators=[numeric_validator],
         help_text="Required for Students (Numbers only). Leave blank for Guests."
     )
-    
+
+    department = models.CharField(
+        max_length=10,
+        choices=Department.choices,
+        blank=True, 
+        null=True # Guests might not belong to a school department
+    )
+
+    logged_at = models.DateTimeField(auto_now_add=True)
     timestamp = models.DateTimeField(auto_now_add=True)
 
     class Meta:

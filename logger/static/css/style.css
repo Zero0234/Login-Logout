@@ -23,8 +23,8 @@ body {
    GLASS CARD COMPONENT
    ========================================= */
 .card {
-    width: 600px;
-    height: 350px;
+    width: 500px;
+    height: 450px;
     padding: 30px;
     margin: 40px auto;
     background: rgb(255, 255, 255);
@@ -46,7 +46,6 @@ body {
     font-size: 70px;
     font-weight: 700;
     line-height: 70px;
-    text-align: left;
     user-select:none;
 }
 
@@ -56,7 +55,6 @@ body {
     font-size: 30px;
     font-weight: 500;
     line-height: 70px;
-    text-align: left;
     user-select:none;
 }
 
@@ -130,6 +128,59 @@ body {
 #id-section input::placeholder {
     color: #a0aec0;
     font-size: 15px;
+}
+
+/* =========================================
+   DEPARTMENT BUTTON SELECTOR MODULE
+   ========================================= */
+#department-section {
+    margin: 15px auto;
+    max-width: 330px;
+    text-align: center;
+}
+
+.dept-label {
+    font-size: 14px;
+    color: #666;
+    margin: 0 0 8px 0;
+    font-weight: 600;
+}
+
+#selected-dept-text {
+    color: #0f479c; /* Highlights the name of your current choice */
+    font-weight: 700;
+}
+
+.dept-button-group {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr); /* Arranges them perfectly into 2 clean rows of 3 */
+    gap: 8px;
+    width: 100%;
+}
+
+/* Base style for inactive department choices */
+.dept-btn {
+    background: #f0f4f8;
+    color: #4a5568;
+    border: 1px solid rgba(12, 45, 117, 0.15);
+    padding: 8px 0;
+    font-size: 13px;
+    font-weight: 700;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.dept-btn:hover {
+    background: #e2e8f0;
+}
+
+/* Active glowing state when a department is chosen */
+.dept-btn.active {
+    background: linear-gradient(135deg, #5de0e6 0%, #004aad 100%);
+    color: white;
+    border:none;
+    box-shadow: 0 4px 10px rgba(54, 69, 208, 0.3);
 }
 
 #login-button{
