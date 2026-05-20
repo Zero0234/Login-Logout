@@ -62,6 +62,13 @@ class NetlabLog(models.Model):
         validators=[numeric_validator],
         help_text="Required for Students (Numbers only). Leave blank for Guests."
     )
+
+    purpose = models.CharField(
+        max_length=50, 
+        blank=True, 
+        null=True,
+        help_text="The purpose of the visit (e.g., Internet, Print)."
+    )
     
     timestamp = models.DateTimeField(auto_now_add=True)
 

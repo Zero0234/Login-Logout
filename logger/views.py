@@ -14,6 +14,7 @@ def log_entry(request):
         role = request.POST.get('role').upper()  # 'STUDENT' or 'GUEST'
         id_number = request.POST.get('id_number', '')
         name_from_form = request.POST.get('name', '')
+        purpose_selected = request.POST.get('purpose', '')
 
         # Remember what the user typed so we don't reset their screen on an error
         context['selected_role'] = role
@@ -27,7 +28,8 @@ def log_entry(request):
                     NetlabLog.objects.create(
                         name=student_profile.full_name, 
                         role='STUDENT', 
-                        id_number=id_number
+                        id_number=id_number,
+                        purpose=purpose_selected
                     )
                     messages.success(request, f"Thank you, {student_profile.full_name}! Entry recorded.")
                     context = {'selected_role': 'STUDENT'} # Reset on success
@@ -37,7 +39,7 @@ def log_entry(request):
             else:
                 # Guest Logic
                 if name_from_form:
-                    NetlabLog.objects.create(name=name_from_form, role='GUEST')
+                    NetlabLog.objects.create(name=name_from_form, role='GUEST', purpose=purpose_selected)
                     messages.success(request, f"Welcome, {name_from_form}!")
                     context = {'selected_role': 'STUDENT'} # Reset on success
                 else:
