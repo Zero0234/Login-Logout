@@ -1,6 +1,15 @@
+/* =========================================
+   BASE BODY STYLING
+   ========================================= */
 body {
-    background: linear-gradient(135deg, #87CEEB 0%, #0061ff 100%);
+    /*background: linear-gradient(135deg, #5de0e6 0%, #004aad 100%);*/
     background-attachment: fixed;
+    background-image: 
+        linear-gradient(rgba(255, 255, 255, 0.15) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255, 255, 255, 0.15) 1px, transparent 1px),
+        linear-gradient(135deg, #5de0e6 0%, #004aad 100%);
+    background-size: 40px 40px, 40px 40px, 100% 100%;
+    background-position: center center;
     min-height: 100vh;
     margin: 0;
     display: flex;
@@ -10,46 +19,142 @@ body {
     font-size: 22px;
 }
 
-.glass-card {
-    width: 320px;
-    height: 300px;
-    padding: 40px;
-    margin: 50px auto;
-    background: rgba(255, 255, 255, 0.13);
-    backdrop-filter: blur(12px);
-    -webkit-backdrop-filter: blur(12px);
+/* =========================================
+   GLASS CARD COMPONENT
+   ========================================= */
+.card {
+    width: 600px;
+    height: 350px;
+    padding: 30px;
+    margin: 40px auto;
+    background: rgb(255, 255, 255);
     border-radius: 20px;
-    border: 1px solid rgba(255, 255, 255, 0.3);
+    border: 1px solid rgba(12, 45, 117, 0.432);
     box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
     position: relative;
     overflow: hidden;
-    color: white;
-    box-shadow: 
-        0 4px 6px rgba(0, 0, 0, 0.15),
-        0 20px 40px rgba(0, 10, 35, 0.35),
-        inset 0 1px 0 rgba(255, 255, 255, 0.3);
+    color: rgb(6, 47, 94);
     text-align: center;
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    font-size: x-large;
+    font-weight: 500;
+    font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 }
 
-.glass-card::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    height: 1px;
-    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.8), transparent);
+.card h3 {
+    margin-top: 15px;
+    margin-bottom: 0;
+    font-size: 70px;
+    font-weight: 700;
+    line-height: 70px;
+    text-align: left;
+    user-select:none;
 }
 
-.glass-card::after {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 1px;
-    height: 100%;
-    background: linear-gradient(180deg, rgba(255, 255, 255, 0.8), transparent, rgba(255, 255, 255, 0.3));
+.card h2 {
+    margin-top: -20px;
+    margin-bottom: 20px;
+    font-size: 30px;
+    font-weight: 500;
+    line-height: 70px;
+    text-align: left;
+    user-select:none;
+}
+
+.role-buttons {
+    display: flex;
+    align-items: center;
+    justify-content: center; 
+    gap: 15px;               /* This creates the gap between your two separate buttons */
+    margin: 20px 0;         /* Adds breathing room above and below the buttons */
+    width: 100%;
+}
+
+.role-buttons label {
+    line-height: 1;
+    background-color: transparent;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 0.5em;
+    padding: 12px 40px;     
+    color: #fff;
+    font-weight: 700;
+    border-radius: 0.5em;     
+    font-size: 16px;
+    box-shadow: 0 0.5em 1em -0.3em hsla(249, 62%, 51%, 0.4);
+    transition: transform 0.2s, opacity 0.2s;
+
+    background: linear-gradient(
+        90deg,
+        rgb(30, 175, 211) 0%,
+        rgb(6, 52, 104) 100%
+    );
+}
+
+.role-buttons label:hover {
+    transform: scale(1.04);
+}
+
+#name-section input, 
+#id-section input {
+    width: 100%;                  
+    max-width: 330px;             
+    padding: 15px 20px;           
+    margin: 15px auto;            
+    font-size: 16px;
+    color: #333333;               
+    background-color: #ffffff;    
+    
+    /* Sleek borders to match your card layout */
+    border: 1px solid rgba(10, 71, 201, 0.25); 
+    border-radius: 8px;           /* Smoothly rounded corners */
+    
+    /* Subtle shadow to give it a modern depth */
+    box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.05), 0 2px 4px rgba(0, 0, 0, 0.04);
+    
+    outline: none;                /* Removes the default ugly browser focus outline */
+    display: block;               /* Centers the input field cleanly in the layout */
+    box-sizing: border-box;       /* Ensures padding doesn't mess up the max-width calculation */
+    transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+/* SLEEK GLOW EFFECT WHEN CLICKED */
+#name-section input:focus, 
+#id-section input:focus {
+    border-color: rgba(2, 21, 83, 0.589); /* Changes border to match your purple buttons */
+    box-shadow: 0 0 0 3px rgba(12, 81, 231, 0.137); /* Adds a soft purple accent glow */
+}
+
+/* PLACEHOLDER STYLING (The faint text inside before you type) */
+#name-section input::placeholder,
+#id-section input::placeholder {
+    color: #a0aec0;
+    font-size: 15px;
+}
+
+#login-button{
+    line-height: 1;
+    background-color: transparent;
+    cursor: pointer;
+    border:none;
+    gap: 0.5em;
+    padding: 10px 40px;     
+    color: #fff;
+    font-weight: 700;
+    border-radius: 2em;     
+    font-size: 16px;
+    box-shadow: 0 0.5em 1em -0.3em hsla(224, 62%, 51%, 0.4);
+    transition: transform 0.2s, opacity 0.2s;
+
+    background: linear-gradient(
+        90deg,
+        rgb(30, 175, 211) 0%,
+        rgb(6, 52, 104) 100%
+    );
+}
+
+#login-button label:hover {
+    transform: scale(1.04);
 }
 
 /* =========================================
@@ -68,11 +173,12 @@ body {
 
 .server-error, #js-message {
     color: #ff4d4d;
-    background: rgba(0,0,0,0.8);
+    background: rgb(255, 255, 255);
     padding: 10px 20px;
     border-radius: 8px;
     font-weight: bold;
     pointer-events: auto;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 }
 
 .server-error {
@@ -151,27 +257,3 @@ body {
 .btn-yes { background: #28a745; padding: 10px 30px; }
 .btn-no { background: #dc3545; padding: 10px 30px; }
 .btn-ok { background: #28a745; padding: 12px 40px; font-size: 16px; }
-
-.brand-text {
-  font-size: 7vw;
-  font-weight: 500;
-  text-transform: uppercase;
-  letter-spacing: 0.05em;
-  white-space: nowrap;
-  color: rgba(255, 255, 255, 0.68); 
-  user-select: none;
-}
-.left-text {
-  position: fixed;
-  top: 20px;
-  left: 8vw;
-  transform: rotate(90deg);
-  transform-origin: top left;
-}
-.right-text {
-  position: fixed;
-  bottom: 350px;
-  right: 0vw;
-  transform: rotate(-90deg);
-  transform-origin: bottom right;
-}

@@ -1,8 +1,10 @@
+import json
 from django.shortcuts import render
 from django.http import JsonResponse
 from django.contrib import messages
-from .models import NetlabLog, LearnerProfile
+from django.views.decorators.http import require_POST
 from django.core.exceptions import ValidationError
+from .models import NetlabLog, LearnerProfile
 
 def log_entry(request):
     # Default context when the page first loads
@@ -54,3 +56,28 @@ def lookup_learner(request):
     if student:
         return JsonResponse({'success': True, 'name': student.full_name})
     return JsonResponse({'success': False})
+
+# --- NEW AJAX REGISTRATION VIEW ---
+@require_POST
+def register_learner_ajax(request):
+    try:
+        data = json.loads(request.body)
+        
+        # Create the instance
+        new_learner = LearnerProfile(
+            id_number=data.get('id_number'),
+            full_name=data.get('full_name'),
+            department=data.get('department')
+        )
+        
+        # full_clean() enforces your RegexValidators before saving
+        new_learner.full_clean() 
+        new_learner.save()
+        
+        return JsonResponse({'success': True})
+        
+    except ValidationError as e:
+        # Returns the specific model validation errors (e.g. wrong ID format)
+        return JsonResponse({'success': False, 'error': "Validation Error: Check your inputs."})
+    except Exception as e:
+        return JsonResponse({'success': False, 'error': "An unexpected error occurred."})
