@@ -40,43 +40,22 @@
         </div>
 
         <div id="id-section">
-            <input type="text" name="id_number" id="id_field" placeholder="Student ID Number" minlength="8" mazlength="8" value="{{ id_val }}">
+            <input type="text" name="id_number" id="id_field" placeholder="Student ID Number" maxlength="8" oninput="this.value = this.value.replace(/[^0-9]/g, '');" value="{{ id_val }}">
         </div>
 
-        <div id="department-section">
-            <p class="dept-label">Department: <span id="selected-dept-text">CCS</span></p>
-    
-            <div class="dept-button-group">
-                <button type="button" class="dept-btn active" onclick="selectDepartment('CCS')">CCS</button>
-                <button type="button" class="dept-btn" onclick="selectDepartment('CASED')">CASED</button>
-                <button type="button" class="dept-btn" onclick="selectDepartment('CON')">CON</button>
-                <button type="button" class="dept-btn" onclick="selectDepartment('COE')">COE</button>
-                <button type="button" class="dept-btn" onclick="selectDepartment('COA')">COA</button>
-                <button type="button" class="dept-btn" onclick="selectDepartment('CBA')">CBA</button>
+        <div id="purpose-selection-section" style="margin-top: 20px; width: 100%;">
+            <p style="color: #555; font-size: 15px; margin-bottom: 10px; font-weight: 600; text-align: center;">Select your purpose today:</p>
+            <div class="modal-actions">
+                <button type="button" onclick="submitPurpose('Internet')" class="btn btn-primary">Internet</button>
+                <button type="button" onclick="submitPurpose('Print')" class="btn btn-primary">Print</button>
+                <button type="button" onclick="submitPurpose('Computer')" class="btn btn-primary">Computer</button>
+                <button type="button" onclick="submitPurpose('Lounge')" class="btn btn-primary">Lounge</button>
+                <button type="button" onclick="submitPurpose('Other')" class="btn btn-secondary">Other</button>
             </div>
-
-            <input type="hidden" name="department" id="id_department" value="CCS">
         </div>
 
-        <button id="login-button" type="button" onclick="verifyEntry()">Login</button>
+        <input type="hidden" name="department" id="id_department" value="CCS">
     </form>
-</div>
-
-<div id="purposeModal" class="modal-overlay">
-    <div class="modal-card" style="min-width: 400px;">
-        <h3 class="modal-title">Welcome, <span id="pulled_name" style="color: #0061ff;"></span>!</h3>
-        <p style="color: #555; margin-bottom: 20px; font-size: 18px;">What is your purpose today?</p>
-        
-        <div class="modal-actions">
-            <button type="button" onclick="submitPurpose('Internet')" class="btn btn-primary">Internet</button>
-            <button type="button" onclick="submitPurpose('Print')" class="btn btn-primary">Print</button>
-            <button type="button" onclick="submitPurpose('Computer')" class="btn btn-primary">Computer</button>
-            <button type="button" onclick="submitPurpose('Lounge')" class="btn btn-primary">Lounge</button>
-            <button type="button" onclick="submitPurpose('Other')" class="btn btn-secondary">Other</button>
-        </div>
-        
-        <button type="button" onclick="closePurposeModal()" class="btn btn-no" style="margin-top: 25px; width: 100%;">Cancel</button>
-    </div>
 </div>
 
 <div id="successModal" class="modal-overlay success-bg">
@@ -96,43 +75,34 @@
         <form id="register-form" style="display: flex; flex-direction: column; gap: 15px;">
             <input type="text" id="reg_id_field" readonly style="padding: 10px; border-radius: 5px; border: 1px solid #ccc; background: #eee;">
             
-            <!-- Pattern enforces letters and spaces on frontend -->
             <input type="text" id="reg_name_field" placeholder="Full Name" required pattern="^[a-zA-Z ]*$" style="padding: 10px; border-radius: 5px; border: 1px solid #ccc;">
             
             <select id="reg_department_field" required style="padding: 10px; border-radius: 5px; border: 1px solid #ccc;">
                 <option value="" disabled selected>Select Department</option>
                 <option value="CCS">CCS</option>
-                <option value="CASED">CASED</option>
                 <option value="CBA">CBA</option>
+                <option value="COE">COE</option>
+                <option value="CASED">CASED</option>
+                <option value="CON">CON</option>
+                <option value="COA">COA</option>
             </select>
             
-            <div class="modal-actions">
-                <button type="button" onclick="submitRegistration()" class="btn btn-yes">Register</button>
-                <button type="button" onclick="closeRegisterModal()" class="btn btn-no">Cancel</button>
+            <div class="modal-actions" style="margin-top: 10px;">
+                <button type="button" onclick="submitRegistration()" class="btn btn-yes" style="background: #28a745; color: white;">Register</button>
+                <button type="button" onclick="closeRegisterModal()" class="btn btn-no" style="background: #dc3545; color: white;">Cancel</button>
             </div>
         </form>
     </div>
 </div>
 
 <script>
-    // --- Handle "Enter" Key Submission ---
-    document.getElementById('main-form').addEventListener('keydown', function(event) {
-        if (event.key === 'Enter') {
-            event.preventDefault(); 
-            verifyEntry(); 
-        }
-    });
-
-    // Added 'isInitialLoad' to prevent wiping out Django server errors on page refresh
     function toggleFields(role, isInitialLoad = false) {
         const idSection = document.getElementById('id-section');
         const nameSection = document.getElementById('name-section');
-        const departmentSection = document.getElementById('department-section');
         const idField = document.getElementById('id_field');
         const nameField = document.getElementById('name_field');
         const jsMessage = document.getElementById('js-message');
 
-        // ONLY clear errors if the user is actively clicking to switch tabs manually
         if (!isInitialLoad) {
             if (jsMessage) jsMessage.style.display = 'none';
             document.querySelectorAll('.server-error').forEach(msg => msg.style.display = 'none');
@@ -141,24 +111,17 @@
         if (role === 'guest' || role === 'GUEST') {
             idSection.style.display = 'none';
             idField.required = false;
-
             nameSection.style.display = 'block';
             nameField.required = true;
-
-            if (departmentSection) departmentSection.style.display = 'none';
         } else {
             idSection.style.display = 'block';
             idField.required = true;
-
             nameSection.style.display = 'none';
             nameField.required = false;
-
-            if (departmentSection) departmentSection.style.display = 'block';
         }
     }
 
     window.onload = function() {
-        // Pass 'true' so it knows this is the first load and leaves the errors alone!
         const selectedRole = "{{ selected_role|default:'STUDENT' }}".toLowerCase();
         toggleFields(selectedRole, true);
 
@@ -177,29 +140,27 @@
         }
     };
 
-    function verifyEntry() {
-        const idInput = document.getElementById('id_field').value.trim(); // Added .trim() to handle spaces safely
+    // This runs instantly when a user clicks a specific purpose button option inside the grid matrix
+    // 1. UPDATE THIS FUNCTION to save the purpose when the ID is not found
+    function submitPurpose(purposeValue) {
+        const idInput = document.getElementById('id_field').value.trim();
+        const nameInput = document.getElementById('name_field').value.trim();
         const selectedRole = document.querySelector('input[name="role"]:checked').value;
     
-        // Clear previous errors on new click
         document.getElementById('js-message').style.display = 'none';
         document.querySelectorAll('.server-error').forEach(msg => msg.style.display = 'none');
 
         if (selectedRole === 'GUEST') {
-            const nameInput = document.getElementById('name_field').value;
             if (!nameInput) {
                 showJsError("Please enter your name.");
                 return;
             }
-            // Instant frontend check for numbers in the Guest Name
             if (/[0-9]/.test(nameInput)) {
-                showJsError("Only letters and spaces are allowed.");
+                showJsError("Only letters and spaces are allowed in names.");
                 return;
             }
-            
-            // NEW: Show the Purpose Modal instead of submitting directly
-            document.getElementById('pulled_name').innerText = nameInput;
-            document.getElementById('purposeModal').style.display = 'flex';
+            document.getElementById('purpose_field').value = purposeValue;
+            document.getElementById('main-form').submit();
             return;
         }
 
@@ -207,55 +168,77 @@
             showJsError("Please enter your Student ID.");
             return;
         }
-
-        if (/[a-zA-Z]/.test(idInput)) {
-            showJsError("ID Number must contain only numbers.");
+        if (/[a-zA-Z]/.test(idInput) || idInput.length !== 8) {
+            showJsError("ID Number must be exactly 8 digits long and contain numbers only.");
             return;
         }
 
-        // ==========================================================
-        // NEW STRICT CHECKPOINT: Locks length to exactly 8 digits
-        // ==========================================================
-        if (idInput.length !== 8) {
-            showJsError("ID Number must be exactly 8 digits long.");
-            return; // Halts execution here so the modals never pop up!
-        }
-
-        // Runs your original endpoint lookup safely now that length is validated!
         fetch(`/lookup/?id_number=${idInput}`)
             .then(response => response.json())
             .then(data => {
                 if (data.success) {
-                    document.getElementById('pulled_name').innerText = data.name;
-                    // CHANGED: Open the purpose selection modal instead of the old student confirmation modal
-                    document.getElementById('purposeModal').style.display = 'flex';
+                    document.getElementById('purpose_field').value = purposeValue;
+                    document.getElementById('main-form').submit();
                 } else {
-                    // ID not found: Populate the readonly ID field and show Register Modal
+                    // NEW: Save the purpose choice secretly before opening the registration modal!
+                    document.getElementById('purpose_field').value = purposeValue;
                     document.getElementById('reg_id_field').value = idInput;
                     document.getElementById('registerModal').style.display = 'flex';
                 }
             })
             .catch(error => {
                 console.error('Error:', error);
-                showJsError("An error occurred. Please check the server.");
+                showJsError("An error occurred checking server availability.");
             });
     }
 
-    function selectDepartment(deptCode) {
-        // 1. Update the value of our hidden form field
-        document.getElementById('id_department').value = deptCode;
-    
-        // 2. Update the text indicator label above the buttons
-        document.getElementById('selected-dept-text').innerText = deptCode;
-    
-        // 3. Remove the 'active' highlight class from all department buttons
-        document.querySelectorAll('.dept-btn').forEach(btn => {
-            btn.classList.remove('active');
+    // 2. UPDATE THIS FUNCTION to send the purpose and trigger the final success modal
+    function submitRegistration() {
+        const idNum = document.getElementById('reg_id_field').value;
+        const name = document.getElementById('reg_name_field').value;
+        const dept = document.getElementById('reg_department_field').value;
+        const purpose = document.getElementById('purpose_field').value; // Grab the saved purpose
+
+        if (!/^[a-zA-Z ]*$/.test(name) || name.trim() === "") {
+            alert("Name must contain only letters and spaces.");
+            return;
+        }
+        if (!dept) {
+            alert("Please select your department.");
+            return;
+        }
+
+        fetch('/register-ajax/', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value
+            },
+            body: JSON.stringify({
+                id_number: idNum,
+                full_name: name,
+                department: dept,
+                purpose: purpose // Send it to Django!
+            })
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                closeRegisterModal();
+                // Boom! Instantly trigger the green success modal using the backend message
+                document.getElementById('success_message_text').innerText = data.message;
+                document.getElementById('successModal').style.display = 'flex';
+                
+                // Clear the main input screen for the next user
+                document.getElementById('id_field').value = "";
+            } else {
+                alert(data.error);
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            alert("An error occurred registering data.");
         });
-    
-        // 4. Add the 'active' highlight class to the specific button clicked
-        // Finding the exact button by checking its text contents
-        Array.from(document.querySelectorAll('.dept-btn')).find(btn => btn.innerText === deptCode).classList.add('active');
     }
 
     function showJsError(messageText) {
@@ -264,24 +247,8 @@
         jsMessage.style.display = 'block';
     }
 
-    // NEW: Handles purpose selection button clicks
-    function submitPurpose(purposeValue) {
-        // Assign the selected value to the hidden input inside your form
-        document.getElementById('purpose_field').value = purposeValue;
-        // Submit the parent form
-        document.getElementById('main-form').submit();
-    }
-
-    // NEW: Closes the purpose selection modal safely
-    function closePurposeModal() {
-        document.getElementById('purposeModal').style.display = 'none';
-        document.getElementById('id_field').value = "";
-        document.getElementById('id_field').focus();
-    }
-
     function closeSuccessModal() {
         document.getElementById('successModal').style.display = 'none';
-        // Clear fields on OK
         document.getElementById('id_field').value = "";
         document.getElementById('name_field').value = "";
     }
@@ -290,58 +257,6 @@
         document.getElementById('registerModal').style.display = 'none';
         document.getElementById('reg_name_field').value = "";
         document.getElementById('reg_department_field').selectedIndex = 0;
-    }
-
-    function submitRegistration() {
-        const idNum = document.getElementById('reg_id_field').value;
-        const name = document.getElementById('reg_name_field').value;
-        const dept = document.getElementById('reg_department_field').value;
-
-        // Frontend Validation mirror
-        if (!/^[a-zA-Z ]*$/.test(name) || name.trim() === "") {
-            showJsError("Name must contain only letters and spaces.");
-            return;
-        }
-        if (!dept) {
-            showJsError("Please select a department.");
-            return;
-        }
-
-        // Hide any previous errors
-        document.getElementById('js-message').style.display = 'none';
-
-        // AJAX POST to Django backend
-        fetch('/register-ajax/', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                // Grab the CSRF token from the main form on the page
-                'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value
-            },
-            body: JSON.stringify({
-                id_number: idNum,
-                full_name: name,
-                department: dept
-            })
-        })
-        .then(response => response.json())
-        .then(data => {
-            if (data.success) {
-                closeRegisterModal();
-                
-                // OPTIMIZATION: Instead of dropping them straight into a blind form submission, 
-                // pull up the Purpose modal for them right away since they are now registered!
-                document.getElementById('pulled_name').innerText = name;
-                document.getElementById('id_field').value = idNum; // Keep the ID field consistent
-                document.getElementById('purposeModal').style.display = 'flex';
-            } else {
-                showJsError(data.error);
-            }
-        })
-        .catch(error => {
-            console.error('Error:', error);
-            showJsError("An error occurred connecting to the server.");
-        });
     }
 </script>
 </body>
