@@ -10,9 +10,14 @@ numeric_validator = RegexValidator(
 )
 
 class LearnerProfile(models.Model):
-    # unique=True ensures no two learners can have the same ID
+    DEPARTMENT_CHOICES = [
+        ('CCS', 'CCS'),
+        ('CASED', 'CASED'),
+        ('CBA', 'CBA'),
+    ]
+
     id_number = models.CharField(
-        max_length=50, 
+        max_length=8, 
         unique=True, 
         validators=[numeric_validator],
         help_text="The official Learner ID Number."
@@ -22,6 +27,12 @@ class LearnerProfile(models.Model):
         validators=[alpha_only],
         help_text="The official Full Name of the Learner."
     )
+    department = models.CharField(
+        max_length=5,
+        choices=DEPARTMENT_CHOICES,
+        default='CCS',
+        help_text="The department of the Learner."
+    )
 
     class Meta:
         verbose_name = "Learner Profile"
@@ -29,7 +40,7 @@ class LearnerProfile(models.Model):
         ordering = ['id_number']
 
     def __str__(self):
-        return f"{self.id_number} - {self.full_name}"
+        return f"{self.id_number} - {self.full_name} ({self.department})"
     
 class NetlabLog(models.Model):
     ROLE_CHOICES = [

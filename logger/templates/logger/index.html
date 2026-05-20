@@ -21,7 +21,11 @@
     <form id="main-form" method="POST">
         {% csrf_token %}
         
+<<<<<<< HEAD
         <h3>NETLAB LOGIN</h3>
+=======
+        <h3>Internet Lab</h3>
+>>>>>>> b32f47c09c1b98d1537af192302521d547d161bb
         <h2>Columban College Inc.</h2>
         
         <div class="role-buttons">
@@ -59,6 +63,32 @@
         <h2 class="success-title">Success!</h2>
         <p id="success_message_text" class="success-text"></p>
         <button type="button" onclick="closeSuccessModal()" class="btn btn-ok">OK</button>
+    </div>
+</div>
+
+<div id="registerModal" class="modal-overlay">
+    <div class="modal-card">
+        <h3 class="modal-title">ID Not Found</h3>
+        <p style="color: #555; font-size: 16px; margin-bottom: 20px;">Please register your details below.</p>
+        
+        <form id="register-form" style="display: flex; flex-direction: column; gap: 15px;">
+            <input type="text" id="reg_id_field" readonly style="padding: 10px; border-radius: 5px; border: 1px solid #ccc; background: #eee;">
+            
+            <!-- Pattern enforces letters and spaces on frontend -->
+            <input type="text" id="reg_name_field" placeholder="Full Name" required pattern="^[a-zA-Z ]*$" style="padding: 10px; border-radius: 5px; border: 1px solid #ccc;">
+            
+            <select id="reg_department_field" required style="padding: 10px; border-radius: 5px; border: 1px solid #ccc;">
+                <option value="" disabled selected>Select Department</option>
+                <option value="CCS">CCS</option>
+                <option value="CASED">CASED</option>
+                <option value="CBA">CBA</option>
+            </select>
+            
+            <div class="modal-actions">
+                <button type="button" onclick="submitRegistration()" class="btn btn-yes">Register</button>
+                <button type="button" onclick="closeRegisterModal()" class="btn btn-no">Cancel</button>
+            </div>
+        </form>
     </div>
 </div>
 
@@ -158,7 +188,9 @@
                     document.getElementById('pulled_name').innerText = data.name;
                     document.getElementById('studentModal').style.display = 'flex';
                 } else {
-                    showJsError("Student ID not found in the master list.");
+                    // ID not found: Populate the readonly ID field and show Register Modal
+                    document.getElementById('reg_id_field').value = idInput;
+                    document.getElementById('registerModal').style.display = 'flex';
                 }
             })
             .catch(error => {
@@ -188,6 +220,60 @@
         // Clear fields on OK
         document.getElementById('id_field').value = "";
         document.getElementById('name_field').value = "";
+    }
+    
+    function closeRegisterModal() {
+        document.getElementById('registerModal').style.display = 'none';
+        document.getElementById('reg_name_field').value = "";
+        document.getElementById('reg_department_field').selectedIndex = 0;
+    }
+
+    function submitRegistration() {
+        const idNum = document.getElementById('reg_id_field').value;
+        const name = document.getElementById('reg_name_field').value;
+        const dept = document.getElementById('reg_department_field').value;
+
+        // Frontend Validation mirror
+        if (!/^[a-zA-Z ]*$/.test(name) || name.trim() === "") {
+            showJsError("Name must contain only letters and spaces.");
+            return;
+        }
+        if (!dept) {
+            showJsError("Please select a department.");
+            return;
+        }
+
+        // Hide any previous errors
+        document.getElementById('js-message').style.display = 'none';
+
+        // AJAX POST to Django backend
+        fetch('/register-ajax/', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                // Grab the CSRF token from the main form on the page
+                'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value
+            },
+            body: JSON.stringify({
+                id_number: idNum,
+                full_name: name,
+                department: dept
+            })
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                closeRegisterModal();
+                // Since they are now registered, submit the main login form!
+                document.getElementById('main-form').submit();
+            } else {
+                showJsError(data.error);
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            showJsError("An error occurred connecting to the server.");
+        });
     }
 </script>
 </body>
