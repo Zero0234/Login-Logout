@@ -1,8 +1,4 @@
-/* =========================================
-   BASE BODY STYLING
-   ========================================= */
 body {
-    /*background: linear-gradient(135deg, #5de0e6 0%, #004aad 100%);*/
     background-attachment: fixed;
     background-image: 
         linear-gradient(rgba(255, 255, 255, 0.15) 1px, transparent 1px),
@@ -19,9 +15,6 @@ body {
     font-size: 22px;
 }
 
-/* =========================================
-   GLASS CARD COMPONENT
-   ========================================= */
 .card {
     width: 500px;
     height: 470px;
@@ -62,8 +55,8 @@ body {
     display: flex;
     align-items: center;
     justify-content: center; 
-    gap: 15px;               /* This creates the gap between your two separate buttons */
-    margin: 20px 0;         /* Adds breathing room above and below the buttons */
+    gap: 15px;               
+    margin: 20px 0;         
     width: 100%;
 }
 
@@ -81,7 +74,6 @@ body {
     font-size: 16px;
     box-shadow: 0 0.5em 1em -0.3em hsla(249, 62%, 51%, 0.4);
     transition: transform 0.2s, opacity 0.2s;
-
     background: linear-gradient(
         135deg,
         rgb(93, 224, 230) 0%,
@@ -102,85 +94,25 @@ body {
     font-size: 16px;
     color: #333333;               
     background-color: #ffffff;    
-    
-    /* Sleek borders to match your card layout */
     border: 1px solid rgba(10, 71, 201, 0.25); 
-    border-radius: 8px;           /* Smoothly rounded corners */
-    
-    /* Subtle shadow to give it a modern depth */
+    border-radius: 8px;          
     box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.05), 0 2px 4px rgba(0, 0, 0, 0.04);
-    
-    outline: none;                /* Removes the default ugly browser focus outline */
-    display: block;               /* Centers the input field cleanly in the layout */
-    box-sizing: border-box;       /* Ensures padding doesn't mess up the max-width calculation */
+    outline: none;        
+    display: block;
+    box-sizing: border-box;
     transition: border-color 0.2s, box-shadow 0.2s;
 }
 
-/* SLEEK GLOW EFFECT WHEN CLICKED */
 #name-section input:focus, 
 #id-section input:focus {
-    border-color: rgba(2, 21, 83, 0.589); /* Changes border to match your purple buttons */
-    box-shadow: 0 0 0 3px rgba(12, 81, 231, 0.137); /* Adds a soft purple accent glow */
+    border-color: rgba(2, 21, 83, 0.589);
+    box-shadow: 0 0 0 3px rgba(12, 81, 231, 0.137);
 }
 
-/* PLACEHOLDER STYLING (The faint text inside before you type) */
 #name-section input::placeholder,
 #id-section input::placeholder {
     color: #a0aec0;
     font-size: 15px;
-}
-
-/* =========================================
-   DEPARTMENT BUTTON SELECTOR MODULE
-   ========================================= */
-#department-section {
-    margin: 15px auto;
-    max-width: 330px;
-    text-align: center;
-}
-
-.dept-label {
-    font-size: 14px;
-    color: #666;
-    margin: 0 0 8px 0;
-    font-weight: 600;
-}
-
-#selected-dept-text {
-    color: #0f479c; /* Highlights the name of your current choice */
-    font-weight: 700;
-}
-
-.dept-button-group {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr); /* Arranges them perfectly into 2 clean rows of 3 */
-    gap: 8px;
-    width: 100%;
-}
-
-/* Base style for inactive department choices */
-.dept-btn {
-    background: #f0f4f8;
-    color: #4a5568;
-    border: 1px solid rgba(12, 45, 117, 0.15);
-    padding: 8px 0;
-    font-size: 13px;
-    font-weight: 700;
-    border-radius: 6px;
-    cursor: pointer;
-    transition: all 0.2s ease;
-}
-
-.dept-btn:hover {
-    background: #e2e8f0;
-}
-
-/* Active glowing state when a department is chosen */
-.dept-btn.active {
-    background: linear-gradient(135deg, #5de0e6 0%, #004aad 100%);
-    color: white;
-    border:none;
-    box-shadow: 0 4px 10px rgba(54, 69, 208, 0.3);
 }
 
 #login-button{
@@ -208,9 +140,7 @@ body {
     transform: scale(1.04);
 }
 
-/* =========================================
-   ERROR MESSAGES (TOP CENTER)
-   ========================================= */
+/*Error Messages Container (Top Center One)*/
 #unified-msg-container {
     position: fixed;
     top: 60px;
@@ -245,9 +175,7 @@ body {
     margin: 0 auto;
 }
 
-/* =========================================
-   MODAL OVERLAYS (BACKGROUND DIMMING)
-   ========================================= */
+/* Modal Overlays */
 .modal-overlay {
     display: none; /* Changed to 'flex' by JS */
     position: fixed;
@@ -265,19 +193,15 @@ body {
     background: rgba(0,0,0,0.6);
 }
 
-/* =========================================
-   FORCED 2-COLUMN MODAL ACTIONS GRID
-   ========================================= */
+/* Purpose 2 Column Div*/
 .modal-actions {
     display: grid !important;
     grid-template-columns: repeat(2, 1fr) !important; 
     gap: 12px !important;                
     
-    /* 1. Shrinks the overall size of the button group */
     width: 80% !important; 
-    max-width: 320px !important; /* Prevents it from looking stretched on large monitors */
+    max-width: 320px !important;
     
-    /* 2. The magic centering trick! (Top: 20px, Right: auto, Bottom: 0, Left: auto) */
     margin: 20px auto 0 auto !important; 
     
     box-sizing: border-box !important;
@@ -295,32 +219,41 @@ body {
     text-align: center !important;
     width: 100% !important;
     box-sizing: border-box !important;
-    display: block !important; /* Forces them to stop acting like inline-blocks */
+    display: block !important; 
     transition: background-color 0.2s, transform 0.1s;
 }
 
-/* Blue Buttons */
 .modal-actions .btn-primary {
     background: linear-gradient(135deg, #5de0e6 0%, #004aad 100%) !important;
 }
 
 .modal-actions .btn-primary:hover {
-    background: linear-gradient(135deg, #37aeb4 0%, #022e68 100%) !important;
+    transform: scale(1.04);
 }
 
-/* Grey "Other" Button */
 .modal-actions .btn-secondary {
-    background-color: #6c757d !important;
+    background: linear-gradient(135deg, #5de0e6 0%, #004aad 100%) !important;
     grid-column: span 2 !important; /* Forces it to stretch across the bottom row */
 }
 
 .modal-actions .btn-secondary:hover {
-    background-color: #5a6268 !important;
+    transform: scale(1.04);
 }
 
-/* =========================================
-   MODAL CARDS (THE WHITE BOXES)
-   ========================================= */
+#purpose-selection-section {
+    margin-top: 20px;
+    width: 100%;
+}
+
+.purpose-label {
+    color: #555;
+    font-size: 15px;
+    margin-bottom: 10px;
+    font-weight: 600;
+    text-align: center;
+}
+
+/* Success Modal Cards*/
 .modal-card {
     background: white;
     padding: 30px;
@@ -343,9 +276,7 @@ body {
 .success-title { margin: 0 0 15px 0; color: #2c3e50; }
 .success-text { color: #555; font-size: 18px; margin-bottom: 25px; font-weight: normal; }
 
-/* =========================================
-   MODAL BUTTONS
-   ========================================= */
+/* Modal buttons*/
 .modal-actions {
     display: flex;
     justify-content: space-around;
@@ -361,26 +292,48 @@ body {
 }
 
 .corner-logo-container {
-    position: fixed;      /* Locks it in place relative to the browser window */
-    bottom: 20px;         /* 20px gap from the bottom edge */
-    right: 20px;          /* 20px gap from the right edge */
-    z-index: 1000;        /* Ensures it sits cleanly above your background shapes */
-    opacity: 0.85;        /* Makes it blend subtly with the design */
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    z-index: 1000;
+    opacity: 0.85;
     transition: transform 0.3s ease, opacity 0.3s ease;
 }
 
-/* Styles the actual logo image inside the container */
 .corner-logo-container img {
-    width: 100px;          /* Clean, non-intrusive desktop size */
-    height: auto;         /* Maintains perfect aspect ratio proportions */
-    display: block;       /* Eliminates default browser inline tracking gaps */
-    filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.15)); /* Adds a sleek modern depth shadow */
+    width: 100px;
+    height: auto;
+    display: block;
+    filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.15));
 }
 
-/* Sleek hover interaction */
 .corner-logo-container:hover {
-    opacity: 1;           /* Lights up fully when you hover over it */
-    transform: scale(1.05); /* Adds a crisp, minimal pop-out zoom effect */
+    opacity: 1;
+    transform: scale(1.05);
+}
+
+/* Footer */
+.site-footer {
+    position: fixed;
+    bottom: 10px;
+    left: 0;
+    width: 100%;
+    text-align: center;
+    color: rgba(255, 255, 255, 0.8); 
+    font-size: 14px;
+    z-index: 10;
+    pointer-events: none;
+}
+
+.site-footer p {
+    margin: 5px 0;
+    font-weight: 500;
+}
+
+.developer-credit {
+    font-size: 12px;
+    opacity: 0.7; 
+    letter-spacing: 0.5px;
 }
 
 .btn-yes { background: #28a745; padding: 10px 30px; }

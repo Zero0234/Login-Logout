@@ -21,6 +21,11 @@
     <img src="{% static 'css/Columban Logo (1).png' %}" alt="Columban College Logo">
 </a>
 
+<div class="site-footer">
+    <p>&copy; 2026 Columban College Inc. All rights reserved.</p>
+    <p class="developer-credit">Internet Lab Logger | Developed by Khyl Selwyn Nucum & Emmanuel Piolo Briones</p>
+</div>
+
 <div class="card">
     <form id="main-form" method="POST">
         {% csrf_token %}
@@ -36,21 +41,21 @@
         </div>
 
         <div id="name-section">
-            <input type="text" name="name" id="name_field" placeholder="Full Name" value="{{ name_val }}">
+            <input type="text" name="name" id="name_field" placeholder="Full Name" autocomplete="off" oninput="this.value = this.value.replace(/[0-9]/g, '');" value="{{ name_val }}">
         </div>
 
         <div id="id-section">
-            <input type="text" name="id_number" id="id_field" placeholder="Student ID Number" maxlength="8" oninput="this.value = this.value.replace(/[^0-9]/g, '');" value="{{ id_val }}">
+            <input type="text" name="id_number" id="id_field" placeholder="Student ID Number" maxlength="8" autocomplete="off" oninput="this.value = this.value.replace(/[^0-9]/g, '');" value="{{ id_val }}">
         </div>
 
-        <div id="purpose-selection-section" style="margin-top: 20px; width: 100%;">
-            <p style="color: #555; font-size: 15px; margin-bottom: 10px; font-weight: 600; text-align: center;">Select your purpose today:</p>
+        <div id="purpose-selection-section">
+            <p class="purpose-label">Select your purpose today:</p>
             <div class="modal-actions">
                 <button type="button" onclick="submitPurpose('Internet')" class="btn btn-primary">Internet</button>
                 <button type="button" onclick="submitPurpose('Print')" class="btn btn-primary">Print</button>
                 <button type="button" onclick="submitPurpose('Computer')" class="btn btn-primary">Computer</button>
                 <button type="button" onclick="submitPurpose('Lounge')" class="btn btn-primary">Lounge</button>
-                <button type="button" onclick="submitPurpose('Other')" class="btn btn-secondary">Other</button>
+                <button type="button" onclick="submitPurpose('Microsoft')" class="btn btn-secondary">Microsoft</button>
             </div>
         </div>
 
@@ -70,7 +75,7 @@
 <div id="registerModal" class="modal-overlay">
     <div class="modal-card">
         <h3 class="modal-title">ID Not Found</h3>
-        <p style="color: #555; font-size: 16px; margin-bottom: 20px;">Please register your details below.</p>
+        <p style="color: #555; font-size: 16px; margin-bottom: 20px; margin-top: -15px;">Please register your details below.</p>
         
         <form id="register-form" style="display: flex; flex-direction: column; gap: 15px;">
             <input type="text" id="reg_id_field" readonly style="padding: 10px; border-radius: 5px; border: 1px solid #ccc; background: #eee;">
