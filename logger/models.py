@@ -32,7 +32,9 @@ class LearnerProfile(models.Model):
     department = models.CharField(
         max_length=10,
         choices=Department.choices,
-        default=Department.CCS
+        default=None,
+        blank=True, 
+        null=True
     )
 
     class Meta:
