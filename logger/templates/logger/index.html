@@ -1,0 +1,268 @@
+{% load static %}
+<!DOCTYPE html>
+<html>
+<head>
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+</head>
+<body>
+
+<div id="unified-msg-container">
+    {% if messages %}
+        {% for message in messages %}
+            {% if "error" in message.tags %}
+                <div class="server-error">{{ message }}</div>
+            {% endif %}
+        {% endfor %}
+    {% endif %}
+    <div id="js-message"></div>
+</div>
+
+<a href="#" class="corner-logo-container">
+    <img src="{% static 'css/Columban Logo (1).png' %}" alt="Columban College Logo">
+</a>
+
+<div class="site-footer">
+    <p>&copy; 2026 Columban College Inc. All rights reserved.</p>
+    <p class="developer-credit">Internet Lab Logger | Developed by Khyl Selwyn Nucum & Emmanuel Piolo Briones</p>
+</div>
+
+<div class="card">
+    <form id="main-form" method="POST">
+        {% csrf_token %}
+        
+        <input type="hidden" name="purpose" id="purpose_field" value="">
+
+        <h3>INTERNET LAB</h3>
+        <h2>Columban College Inc.</h2>
+        
+        <div class="role-buttons">
+            <label><input type="radio" name="role" value="STUDENT" onclick="toggleFields('student')" {% if selected_role != 'GUEST' %}checked{% endif %}> Student</label>
+            <label><input type="radio" name="role" value="GUEST" onclick="toggleFields('guest')" {% if selected_role == 'GUEST' %}checked{% endif %}> Guest</label>
+        </div>
+
+        <div id="name-section">
+            <input type="text" name="name" id="name_field" placeholder="Full Name" autocomplete="off" oninput="this.value = this.value.replace(/[0-9]/g, '');" value="{{ name_val }}">
+        </div>
+
+        <div id="id-section">
+            <input type="text" name="id_number" id="id_field" placeholder="Student ID Number" maxlength="8" autocomplete="off" oninput="this.value = this.value.replace(/[^0-9]/g, '');" value="{{ id_val }}">
+        </div>
+
+        <div id="purpose-selection-section">
+            <p class="purpose-label">Select your purpose today:</p>
+            <div class="modal-actions">
+                <button type="button" onclick="submitPurpose('Internet')" class="btn btn-primary">Internet</button>
+                <button type="button" onclick="submitPurpose('Print')" class="btn btn-primary">Print</button>
+                <button type="button" onclick="submitPurpose('Computer')" class="btn btn-primary">Computer</button>
+                <button type="button" onclick="submitPurpose('Lounge')" class="btn btn-primary">Lounge</button>
+                <button type="button" onclick="submitPurpose('Microsoft')" class="btn btn-secondary">Microsoft</button>
+            </div>
+        </div>
+
+        <input type="hidden" name="department" id="id_department" value="CCS">
+    </form>
+</div>
+
+<div id="successModal" class="modal-overlay success-bg">
+    <div class="modal-card success-card">
+        <div class="success-icon">✓</div>
+        <h2 class="success-title">Success!</h2>
+        <p id="success_message_text" class="success-text"></p>
+        <button type="button" onclick="closeSuccessModal()" class="btn btn-ok">OK</button>
+    </div>
+</div>
+
+<div id="registerModal" class="modal-overlay">
+    <div class="modal-card">
+        <h3 class="modal-title">ID Not Found</h3>
+        <p class="modal-subtitle">Please register your details below.</p>
+        
+        <form id="register-form">
+            <input type="text" id="reg_id_field" readonly class="form-input readonly-input">
+            
+            <input type="text" id="reg_name_field" placeholder="Full Name" required pattern="^[a-zA-Z ]*$" class="form-input">
+            
+            <select id="reg_department_field" required class="form-input">
+                <option value="" disabled selected>Select Department</option>
+                <option value="CCS">CCS</option>
+                <option value="CBA">CBA</option>
+                <option value="COE">COE</option>
+                <option value="CASED">CASED</option>
+                <option value="CON">CON</option>
+                <option value="COA">COA</option>
+            </select>
+            
+            <div class="modal-actions register-actions">
+                <button type="button" onclick="submitRegistration()" class="btn btn-yes">Register</button>
+                <button type="button" onclick="closeRegisterModal()" class="btn btn-no">Cancel</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<script>
+    function toggleFields(role, isInitialLoad = false) {
+        const idSection = document.getElementById('id-section');
+        const nameSection = document.getElementById('name-section');
+        const idField = document.getElementById('id_field');
+        const nameField = document.getElementById('name_field');
+        const jsMessage = document.getElementById('js-message');
+
+        if (!isInitialLoad) {
+            if (jsMessage) jsMessage.style.display = 'none';
+            document.querySelectorAll('.server-error').forEach(msg => msg.style.display = 'none');
+        }
+
+        if (role === 'guest' || role === 'GUEST') {
+            idSection.style.display = 'none';
+            idField.required = false;
+            nameSection.style.display = 'block';
+            nameField.required = true;
+        } else {
+            idSection.style.display = 'block';
+            idField.required = true;
+            nameSection.style.display = 'none';
+            nameField.required = false;
+        }
+    }
+
+    window.onload = function() {
+        const selectedRole = "{{ selected_role|default:'STUDENT' }}".toLowerCase();
+        toggleFields(selectedRole, true);
+
+        let successMessage = "";
+        {% if messages %}
+            {% for message in messages %}
+                {% if "success" in message.tags %}
+                    successMessage = "{{ message|escapejs }}";
+                {% endif %}
+            {% endfor %}
+        {% endif %}
+
+        if (successMessage !== "") {
+            document.getElementById('success_message_text').innerText = successMessage;
+            document.getElementById('successModal').style.display = 'flex';
+        }
+    };
+
+    // This runs instantly when a user clicks a specific purpose button option inside the grid matrix
+    // 1. UPDATE THIS FUNCTION to save the purpose when the ID is not found
+    function submitPurpose(purposeValue) {
+        const idInput = document.getElementById('id_field').value.trim();
+        const nameInput = document.getElementById('name_field').value.trim();
+        const selectedRole = document.querySelector('input[name="role"]:checked').value;
+    
+        document.getElementById('js-message').style.display = 'none';
+        document.querySelectorAll('.server-error').forEach(msg => msg.style.display = 'none');
+
+        if (selectedRole === 'GUEST') {
+            if (!nameInput) {
+                showJsError("Please enter your name.");
+                return;
+            }
+            if (/[0-9]/.test(nameInput)) {
+                showJsError("Only letters and spaces are allowed in names.");
+                return;
+            }
+            document.getElementById('purpose_field').value = purposeValue;
+            document.getElementById('main-form').submit();
+            return;
+        }
+
+        if (!idInput) {
+            showJsError("Please enter your Student ID.");
+            return;
+        }
+        if (/[a-zA-Z]/.test(idInput) || idInput.length !== 8) {
+            showJsError("ID Number must be exactly 8 digits long and contain numbers only.");
+            return;
+        }
+
+        fetch(`/lookup/?id_number=${idInput}`)
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    document.getElementById('purpose_field').value = purposeValue;
+                    document.getElementById('main-form').submit();
+                } else {
+                    // NEW: Save the purpose choice secretly before opening the registration modal!
+                    document.getElementById('purpose_field').value = purposeValue;
+                    document.getElementById('reg_id_field').value = idInput;
+                    document.getElementById('registerModal').style.display = 'flex';
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                showJsError("An error occurred checking server availability.");
+            });
+    }
+
+    // 2. UPDATE THIS FUNCTION to send the purpose and trigger the final success modal
+    function submitRegistration() {
+        const idNum = document.getElementById('reg_id_field').value;
+        const name = document.getElementById('reg_name_field').value;
+        const dept = document.getElementById('reg_department_field').value;
+        const purpose = document.getElementById('purpose_field').value; // Grab the saved purpose
+
+        if (!/^[a-zA-Z ]*$/.test(name) || name.trim() === "") {
+            alert("Name must contain only letters and spaces.");
+            return;
+        }
+        if (!dept) {
+            alert("Please select your department.");
+            return;
+        }
+
+        fetch('/register-ajax/', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value
+            },
+            body: JSON.stringify({
+                id_number: idNum,
+                full_name: name,
+                department: dept,
+                purpose: purpose // Send it to Django!
+            })
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                closeRegisterModal();
+                // Boom! Instantly trigger the green success modal using the backend message
+                document.getElementById('success_message_text').innerText = data.message;
+                document.getElementById('successModal').style.display = 'flex';
+                
+                // Clear the main input screen for the next user
+                document.getElementById('id_field').value = "";
+            } else {
+                alert(data.error);
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            alert("An error occurred registering data.");
+        });
+    }
+
+    function showJsError(messageText) {
+        const jsMessage = document.getElementById('js-message');
+        jsMessage.innerText = messageText;
+        jsMessage.style.display = 'block';
+    }
+
+    function closeSuccessModal() {
+        document.getElementById('successModal').style.display = 'none';
+        document.getElementById('id_field').value = "";
+        document.getElementById('name_field').value = "";
+    }
+    
+    function closeRegisterModal() {
+        document.getElementById('registerModal').style.display = 'none';
+        document.getElementById('reg_name_field').value = "";
+        document.getElementById('reg_department_field').selectedIndex = 0;
+    }
+</script>
+</body>
+</html>

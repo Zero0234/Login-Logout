@@ -1,0 +1,388 @@
+body {
+    background-attachment: fixed;
+    background-image: 
+        linear-gradient(rgba(255, 255, 255, 0.15) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255, 255, 255, 0.15) 1px, transparent 1px),
+        linear-gradient(135deg, #5de0e6 0%, #004aad 100%);
+    background-size: 40px 40px, 40px 40px, 100% 100%;
+    background-position: center center;
+    min-height: 100vh;
+    margin: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: sans-serif;
+    font-size: 22px;
+}
+
+.card {
+    width: 500px;
+    height: 470px;
+    padding: 30px;
+    margin: 40px auto;
+    background: rgb(255, 255, 255);
+    border-radius: 20px;
+    border: 1px solid rgba(12, 45, 117, 0.432);
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+    position: relative;
+    overflow: hidden;
+    color: rgb(6, 47, 94);
+    text-align: center;
+    font-size: x-large;
+    font-weight: 500;
+    font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+.card h3 {
+    margin-top: 15px;
+    margin-bottom: 0;
+    font-size: 70px;
+    font-weight: 700;
+    line-height: 70px;
+    user-select:none;
+}
+
+.card h2 {
+    margin-top: -20px;
+    margin-bottom: 20px;
+    font-size: 30px;
+    font-weight: 500;
+    line-height: 70px;
+    user-select:none;
+}
+
+.role-buttons {
+    display: flex;
+    align-items: center;
+    justify-content: center; 
+    gap: 15px;               
+    margin: 20px 0;         
+    width: 100%;
+}
+
+.role-buttons label {
+    line-height: 1;
+    background-color: transparent;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 0.5em;
+    padding: 12px 40px;     
+    color: #fff;
+    font-weight: 700;
+    border-radius: 0.5em;     
+    font-size: 16px;
+    box-shadow: 0 0.5em 1em -0.3em hsla(249, 62%, 51%, 0.4);
+    transition: transform 0.2s, opacity 0.2s;
+    background: linear-gradient(
+        135deg,
+        rgb(93, 224, 230) 0%,
+        rgb(0, 74, 173) 100%
+    );
+}
+
+.role-buttons label:hover {
+    transform: scale(1.04);
+}
+
+#name-section input, 
+#id-section input {
+    width: 100%;                  
+    max-width: 330px;             
+    padding: 15px 20px;           
+    margin: 15px auto;            
+    font-size: 16px;
+    color: #333333;               
+    background-color: #ffffff;    
+    border: 1px solid rgba(10, 71, 201, 0.25); 
+    border-radius: 8px;          
+    box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.05), 0 2px 4px rgba(0, 0, 0, 0.04);
+    outline: none;        
+    display: block;
+    box-sizing: border-box;
+    transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+#name-section input:focus, 
+#id-section input:focus {
+    border-color: rgba(2, 21, 83, 0.589);
+    box-shadow: 0 0 0 3px rgba(12, 81, 231, 0.137);
+}
+
+#name-section input::placeholder,
+#id-section input::placeholder {
+    color: #a0aec0;
+    font-size: 15px;
+}
+
+#login-button{
+    line-height: 1;
+    background-color: transparent;
+    cursor: pointer;
+    border:none;
+    gap: 0.5em;
+    padding: 10px 40px;     
+    color: #fff;
+    font-weight: 700;
+    border-radius: 2em;     
+    font-size: 16px;
+    box-shadow: 0 0.5em 1em -0.3em hsla(224, 62%, 51%, 0.4);
+    transition: transform 0.2s, opacity 0.2s;
+
+    background: linear-gradient(
+        135deg,
+        rgb(93, 224, 230) 0%,
+        rgb(0, 74, 173) 100%
+    );
+}
+
+#login-button label:hover {
+    transform: scale(1.04);
+}
+
+/*Error Messages Container (Top Center One)*/
+#unified-msg-container {
+    position: fixed;
+    top: 60px;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 10000;
+    text-align: center;
+    width: 100%;
+    pointer-events: none;
+}
+
+.server-error, #js-message {
+    color: #ff4d4d;
+    background: rgb(255, 255, 255);
+    padding: 10px 43px;
+    border: 1px solid rgba(12, 45, 117, 0.432);
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+    border-radius: 8px;
+    font-weight: bold;
+    pointer-events: auto;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+.server-error {
+    display: inline-block;
+    margin-bottom: 5px;
+}
+
+#js-message {
+    display: none;
+    width: max-content;
+    margin: 0 auto;
+}
+
+/* Modal Overlays */
+.modal-overlay {
+    display: none; /* Changed to 'flex' by JS */
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0,0,0,0.7);
+    z-index: 9999;
+    align-items: center;
+    justify-content: center;
+}
+
+.modal-overlay.success-bg {
+    background: rgba(0,0,0,0.6);
+}
+
+/* Purpose 2 Column Div*/
+.modal-actions {
+    display: grid !important;
+    grid-template-columns: repeat(2, 1fr) !important; 
+    gap: 12px !important;                
+    
+    width: 80% !important; 
+    max-width: 320px !important;
+    
+    margin: 20px auto 0 auto !important; 
+    
+    box-sizing: border-box !important;
+    padding: 0 !important;
+}
+
+.modal-actions .btn {
+    padding: 12px 10px !important;
+    font-size: 15px !important;
+    font-weight: 600 !important;
+    color: #ffffff !important;
+    border: none !important;
+    border-radius: 6px !important;
+    cursor: pointer !important;
+    text-align: center !important;
+    width: 100% !important;
+    box-sizing: border-box !important;
+    display: block !important; 
+    transition: background-color 0.2s, transform 0.1s;
+}
+
+.modal-actions .btn-primary {
+    background: linear-gradient(135deg, #5de0e6 0%, #004aad 100%) !important;
+}
+
+.modal-actions .btn-primary:hover {
+    transform: scale(1.04);
+}
+
+.modal-actions .btn-secondary {
+    background: linear-gradient(135deg, #5de0e6 0%, #004aad 100%) !important;
+    grid-column: span 2 !important; /* Forces it to stretch across the bottom row */
+}
+
+.modal-actions .btn-secondary:hover {
+    transform: scale(1.04);
+}
+
+#purpose-selection-section {
+    margin-top: 20px;
+    width: 100%;
+}
+
+.purpose-label {
+    color: #555;
+    font-size: 15px;
+    margin-bottom: 10px;
+    font-weight: 600;
+    text-align: center;
+}
+
+/* Success Modal Cards*/
+.modal-card {
+    background: white;
+    padding: 30px;
+    border-radius: 15px;
+    text-align: center;
+    min-width: 300px;
+    box-shadow: 0px 4px 15px rgba(0,0,0,0.3);
+}
+
+.modal-card.success-card {
+    min-width: 350px;
+    border-top: 8px solid #28a745;
+    box-shadow: 0px 10px 25px rgba(0,0,0,0.4);
+}
+
+/* Modal Typography */
+.modal-title { margin-top: 0; color: #555; }
+.modal-name { color: #2c3e50; margin: 20px 0; }
+.success-icon { font-size: 50px; color: #28a745; margin-bottom: 10px; }
+.success-title { margin: 0 0 15px 0; color: #2c3e50; }
+.success-text { color: #555; font-size: 18px; margin-bottom: 25px; font-weight: normal; }
+
+/* Modal buttons*/
+.modal-actions {
+    display: flex;
+    justify-content: space-around;
+    margin-top: 20px;
+}
+
+.btn {
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-weight: bold;
+    color: white;
+}
+
+.modal-subtitle {
+    color: #555;
+    font-size: 16px;
+    margin-bottom: 20px;
+    margin-top: -15px;
+}
+
+#register-form {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.form-input {
+    padding: 10px;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+    font-family: inherit;
+}
+
+.readonly-input {
+    background-color: #eee;
+    cursor: not-allowed;
+}
+
+#register-form .register-actions {
+    margin-top: 10px;
+}
+
+.btn-yes {
+    background-color: #28a745 !important;
+    color: white !important;
+}
+
+.btn-yes:hover {
+    background-color: #218838 !important;
+}
+
+.btn-no {
+    background-color: #dc3545 !important;
+    color: white !important;
+}
+
+.btn-no:hover {
+    background-color: #c82333 !important;
+}
+
+.corner-logo-container {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    z-index: 1000;
+    opacity: 0.85;
+    transition: transform 0.3s ease, opacity 0.3s ease;
+}
+
+.corner-logo-container img {
+    width: 100px;
+    height: auto;
+    display: block;
+    filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.15));
+}
+
+.corner-logo-container:hover {
+    opacity: 1;
+    transform: scale(1.05);
+}
+
+/* Footer */
+.site-footer {
+    position: fixed;
+    bottom: 10px;
+    left: 0;
+    width: 100%;
+    text-align: center;
+    color: rgba(255, 255, 255, 0.8); 
+    font-size: 14px;
+    z-index: 10;
+    pointer-events: none;
+}
+
+.site-footer p {
+    margin: 5px 0;
+    font-weight: 500;
+}
+
+.developer-credit {
+    font-size: 12px;
+    opacity: 0.7; 
+    letter-spacing: 0.5px;
+}
+
+.btn-yes { background: #28a745; padding: 10px 30px; }
+.btn-no { background: #dc3545; padding: 10px 30px; }
+.btn-ok { background: #28a745; padding: 12px 40px; font-size: 16px; }
