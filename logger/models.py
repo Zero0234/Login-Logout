@@ -76,7 +76,7 @@ class NetlabLog(models.Model):
         max_length=10,
         choices=Department.choices,
         blank=True, 
-        null=True # Guests might not belong to a school department
+        null=True
     )
 
     logged_at = models.DateTimeField(auto_now_add=True)
@@ -96,10 +96,8 @@ class NetlabLog(models.Model):
             raise ValidationError({'id_number': 'An ID Number is required for Students.'})
         
         if self.role == 'GUEST' and self.id_number:
-            # If a guest somehow inputs an ID, we strip it out to keep data clean
             self.id_number = None
 
     def save(self, *args, **kwargs):
-        # Ensure the clean method runs every time a log is saved
         self.full_clean()
         super().save(*args, **kwargs)

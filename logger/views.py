@@ -7,16 +7,14 @@ from django.core.exceptions import ValidationError
 from .models import NetlabLog, LearnerProfile
 
 def log_entry(request):
-    # Default context when the page first loads
     context = {'selected_role': 'STUDENT', 'name_val': '', 'id_val': ''}
 
     if request.method == 'POST':
-        role = request.POST.get('role', 'STUDENT').upper()  # 'STUDENT' or 'GUEST'
+        role = request.POST.get('role', 'STUDENT').upper() 
         id_number = request.POST.get('id_number', '').strip()
         name_from_form = request.POST.get('name', '').strip()
         purpose_selected = request.POST.get('purpose', '').strip()
         
-        # Fallback value default if guest logs in
         department_from_form = request.POST.get('department', 'CCS')
 
         context['selected_role'] = role
@@ -24,7 +22,6 @@ def log_entry(request):
         context['id_val'] = id_number
 
         try:
-            # Check to make sure a valid purpose parameter tag arrived safely
             if not purpose_selected:
                 raise ValidationError({'purpose': 'Please select a log entry purpose interaction choice.'})
 
@@ -38,16 +35,16 @@ def log_entry(request):
                         name=student_profile.full_name, 
                         role='STUDENT', 
                         id_number=id_number,
-                        department=student_profile.department, # Copies saved database department data automatically!
+                        department=student_profile.department,
                         purpose=purpose_selected
                     )
                     messages.success(request, f"Thank you, {student_profile.full_name}! Entry recorded for {purpose_selected}.")
-                    context = {'selected_role': 'STUDENT'} # Reset dashboard parameters on complete execution save loop
+                    context = {'selected_role': 'STUDENT'}
                 else:
                     messages.error(request, "Error: Student ID record registration path not found.")
             
             else:
-                # Guest Path Workflow Module
+
                 if name_from_form:
                     NetlabLog.objects.create(
                         name=name_from_form, 
@@ -83,13 +80,11 @@ def register_learner_ajax(request):
     try:
         data = json.loads(request.body)
         
-        # Extract variables
         id_number = str(data.get('id_number', '')).strip()
         full_name = data.get('full_name')
         department = data.get('department')
         purpose = data.get('purpose')
         
-        # 1. Create and validate the new Learner Profile
         new_learner = LearnerProfile(
             id_number=id_number,
             full_name=full_name,
@@ -98,7 +93,6 @@ def register_learner_ajax(request):
         new_learner.full_clean() 
         new_learner.save()
         
-        # 2. Automatically generate the Log Entry so they don't have to click again!
         NetlabLog.objects.create(
             name=full_name, 
             role='STUDENT', 
@@ -107,7 +101,6 @@ def register_learner_ajax(request):
             purpose=purpose
         )
         
-        # 3. Send the clean success text back to the JavaScript modal handler
         success_msg = f"Welcome, {full_name}! Entry recorded for {purpose}."
         return JsonResponse({'success': True, 'message': success_msg})
         

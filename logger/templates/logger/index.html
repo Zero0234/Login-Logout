@@ -75,14 +75,14 @@
 <div id="registerModal" class="modal-overlay">
     <div class="modal-card">
         <h3 class="modal-title">ID Not Found</h3>
-        <p style="color: #555; font-size: 16px; margin-bottom: 20px; margin-top: -15px;">Please register your details below.</p>
+        <p class="modal-subtitle">Please register your details below.</p>
         
-        <form id="register-form" style="display: flex; flex-direction: column; gap: 15px;">
-            <input type="text" id="reg_id_field" readonly style="padding: 10px; border-radius: 5px; border: 1px solid #ccc; background: #eee;">
+        <form id="register-form">
+            <input type="text" id="reg_id_field" readonly class="form-input readonly-input">
             
-            <input type="text" id="reg_name_field" placeholder="Full Name" required pattern="^[a-zA-Z ]*$" style="padding: 10px; border-radius: 5px; border: 1px solid #ccc;">
+            <input type="text" id="reg_name_field" placeholder="Full Name" required pattern="^[a-zA-Z ]*$" class="form-input">
             
-            <select id="reg_department_field" required style="padding: 10px; border-radius: 5px; border: 1px solid #ccc;">
+            <select id="reg_department_field" required class="form-input">
                 <option value="" disabled selected>Select Department</option>
                 <option value="CCS">CCS</option>
                 <option value="CBA">CBA</option>
@@ -92,9 +92,9 @@
                 <option value="COA">COA</option>
             </select>
             
-            <div class="modal-actions" style="margin-top: 10px;">
-                <button type="button" onclick="submitRegistration()" class="btn btn-yes" style="background: #28a745; color: white;">Register</button>
-                <button type="button" onclick="closeRegisterModal()" class="btn btn-no" style="background: #dc3545; color: white;">Cancel</button>
+            <div class="modal-actions register-actions">
+                <button type="button" onclick="submitRegistration()" class="btn btn-yes">Register</button>
+                <button type="button" onclick="closeRegisterModal()" class="btn btn-no">Cancel</button>
             </div>
         </form>
     </div>

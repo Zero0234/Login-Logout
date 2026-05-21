@@ -2,7 +2,7 @@ from django.contrib import admin
 from .models import NetlabLog, LearnerProfile
 from import_export.admin import ImportExportModelAdmin
 
-# Registers the new Master List in the Admin Panel
+# Student Master List
 @admin.register(LearnerProfile)
 class LearnerProfileAdmin(ImportExportModelAdmin):
     list_display = ('id_number', 'full_name', 'get_department_upper')
@@ -13,7 +13,7 @@ class LearnerProfileAdmin(ImportExportModelAdmin):
         return str(obj.department).upper() if obj.department else "-"
     get_department_upper.short_description = 'Department'
 
-# Our existing Daily Log configuration
+# Daily Log
 @admin.register(NetlabLog)
 class NetlabLogAdmin(admin.ModelAdmin):
     list_display = ('name', 'role', 'id_number', 'get_department_upper', 'purpose', 'timestamp')
