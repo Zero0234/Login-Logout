@@ -16,6 +16,7 @@ class Department(models.TextChoices):
     CASED = 'CASED'
     CON = 'CON'
     COA = 'COA'
+    Graduate_School = 'Graduate_School'
 
 class LearnerProfile(models.Model):
     id_number = models.CharField(
@@ -30,7 +31,7 @@ class LearnerProfile(models.Model):
         help_text="The official Full Name of the Learner."
     )
     department = models.CharField(
-        max_length=10,
+        max_length=20,
         choices=Department.choices,
         default=None,
         blank=True, 
@@ -75,7 +76,7 @@ class NetlabLog(models.Model):
     
 
     department = models.CharField(
-        max_length=10,
+        max_length=20,
         choices=Department.choices,
         blank=True, 
         null=True
