@@ -67,7 +67,7 @@ body {
     display: flex;
     align-items: center;
     gap: 0.5em;
-    padding: 12px 40px;     
+    padding: 12px 50px;     
     color: #01121b;
     font-weight: 700;
     border-radius: 0.5em;     
@@ -100,7 +100,7 @@ body {
 #name-section input, 
 #id-section input {
     width: 100%;                  
-    max-width: 330px;             
+    max-width: 300px;             
     padding: 15px 20px;           
     margin: 30px auto;            
     font-size: 16px;
@@ -209,10 +209,10 @@ body {
 .modal-actions {
     display: grid !important;
     grid-template-columns: repeat(2, 1fr) !important; 
-    gap: 12px !important;                
+    gap: 8px !important;                
     
     width: 90% !important; 
-    max-width: 320px !important;
+    max-width: 380px !important;
     
     margin: 20px auto 0 auto !important; 
     
@@ -221,7 +221,7 @@ body {
 }
 
 .modal-actions .btn {
-    padding: 12px 14px !important;
+    padding: 12px 16px !important;
     font-size: 15px !important;
     font-weight: 600 !important;
     color: #ffffff !important;
@@ -261,7 +261,7 @@ body {
 .purpose-label {
     color: #010315;
     font-size: 15px;
-    margin-bottom: 10px;
+    margin-bottom: 0px;
     margin-top:-10px;
     font-weight: 600;
     text-align: center;
