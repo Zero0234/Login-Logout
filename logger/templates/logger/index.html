@@ -3,6 +3,7 @@
 <html>
 <head>
     <link rel="stylesheet" href="{% static 'css/style.css' %}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
 <body>
 
@@ -36,8 +37,10 @@
         <h2>Columban College Inc.</h2>
         
         <div class="role-buttons">
-            <label><input type="radio" name="role" value="STUDENT" onclick="toggleFields('student')" {% if selected_role != 'GUEST' %}checked{% endif %}> Student</label>
-            <label><input type="radio" name="role" value="GUEST" onclick="toggleFields('guest')" {% if selected_role == 'GUEST' %}checked{% endif %}> Guest</label>
+            <label><input type="radio" name="role" value="STUDENT" onclick="toggleFields('student')" {% if selected_role != 'GUEST' %}checked{% endif %}><i class="fas fa-user-graduate"></i> Student
+            </label>
+            <label><input type="radio" name="role" value="GUEST" onclick="toggleFields('guest')" {% if selected_role == 'GUEST' %}checked{% endif %}> <i class="fas fa-user"></i> Guest
+            </label>
         </div>
 
         <div id="name-section">
@@ -49,17 +52,21 @@
         </div>
 
         <div id="purpose-selection-section">
-            <p class="purpose-label">Select your purpose today:</p>
+            <p class="purpose-label">Select your purpose/s today:</p>
             <div class="modal-actions">
-                <button type="button" onclick="submitPurpose('Internet')" class="btn btn-primary">Internet</button>
-                <button type="button" onclick="submitPurpose('Print')" class="btn btn-primary">Print</button>
-                <button type="button" onclick="submitPurpose('Computer')" class="btn btn-primary">Computer</button>
-                <button type="button" onclick="submitPurpose('Lounge')" class="btn btn-primary">Lounge</button>
-                <button type="button" onclick="submitPurpose('Microsoft')" class="btn btn-secondary">Microsoft</button>
+                <button type="button" onclick="togglePurpose(this, 'Internet')" class="btn purpose-btn"><i class="fas fa-globe"></i> Internet</button>
+                <button type="button" onclick="togglePurpose(this, 'Print')" class="btn purpose-btn"><i class="fas fa-print"></i> Print</button>
+                <button type="button" onclick="togglePurpose(this, 'Computer')" class="btn purpose-btn"><i class="fas fa-desktop"></i> Computer</button>
+                <button type="button" onclick="togglePurpose(this, 'Lounge')" class="btn purpose-btn"><i class="fas fa-couch"></i> Lounge</button>
+                <button type="button" onclick="togglePurpose(this, 'Microsoft')" class="btn purpose-btn"><i class="fab fa-windows"></i> Microsoft</button>
             </div>
+            
+            <button type="button" id="final-submit-btn" onclick="submitFinalEntry()" style="margin: 20px auto 0 auto;; width: 65%; background: linear-gradient(135deg, #5de0e6 0%, #004aad 100%); color: white; padding: 12px; border: none; border-radius: 8px; font-size: 16px; font-weight: bold; cursor: pointer; display: flex; justify-content: center; align-items: center; gap: 8px; user-select:none;">
+                <i class="fas fa-check-circle"></i> Submit Entry
+            </button>
         </div>
-
-        <input type="hidden" name="department" id="id_department" value="CCS">
+        
+        <input type="hidden" name="department" id="id_department" value="">
     </form>
 </div>
 
@@ -145,16 +152,39 @@
             document.getElementById('successModal').style.display = 'flex';
         }
     };
+    let selectedPurposes = [];
 
-    // This runs instantly when a user clicks a specific purpose button option inside the grid matrix
-    // 1. UPDATE THIS FUNCTION to save the purpose when the ID is not found
-    function submitPurpose(purposeValue) {
+    // 2. Toggles the selection visually and in the array
+    function togglePurpose(btnElement, purposeValue) {
+        if (selectedPurposes.includes(purposeValue)) {
+            // If already selected, remove it
+            selectedPurposes = selectedPurposes.filter(p => p !== purposeValue);
+            btnElement.classList.remove('selected');
+        } else {
+            // If not selected, add it
+            selectedPurposes.push(purposeValue);
+            btnElement.classList.add('selected');
+        }
+    }
+
+    // 3. The new final submission function (replaces your old submitPurpose)
+    function submitFinalEntry() {
         const idInput = document.getElementById('id_field').value.trim();
         const nameInput = document.getElementById('name_field').value.trim();
         const selectedRole = document.querySelector('input[name="role"]:checked').value;
     
+        // Clear previous errors
         document.getElementById('js-message').style.display = 'none';
         document.querySelectorAll('.server-error').forEach(msg => msg.style.display = 'none');
+
+        // NEW CHECK: Did they select at least one purpose?
+        if (selectedPurposes.length === 0) {
+            showJsError("Please select at least one purpose from the options.");
+            return;
+        }
+
+        // Combine the array into a comma-separated string (e.g., "Internet, Print")
+        const finalPurposeString = selectedPurposes.join(', ');
 
         if (selectedRole === 'GUEST') {
             if (!nameInput) {
@@ -165,7 +195,8 @@
                 showJsError("Only letters and spaces are allowed in names.");
                 return;
             }
-            document.getElementById('purpose_field').value = purposeValue;
+            
+            document.getElementById('purpose_field').value = finalPurposeString;
             document.getElementById('main-form').submit();
             return;
         }
@@ -183,11 +214,12 @@
             .then(response => response.json())
             .then(data => {
                 if (data.success) {
-                    document.getElementById('purpose_field').value = purposeValue;
+                    // ID exists! Set hidden field values and submit main card form cleanly
+                    document.getElementById('purpose_field').value = finalPurposeString;
                     document.getElementById('main-form').submit();
                 } else {
-                    // NEW: Save the purpose choice secretly before opening the registration modal!
-                    document.getElementById('purpose_field').value = purposeValue;
+                    // Open registration modal layout
+                    document.getElementById('purpose_field').value = finalPurposeString;
                     document.getElementById('reg_id_field').value = idInput;
                     document.getElementById('registerModal').style.display = 'flex';
                 }

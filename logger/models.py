@@ -68,7 +68,7 @@ class NetlabLog(models.Model):
     )
 
     purpose = models.CharField(
-        max_length=50, 
+        max_length=150, 
         blank=True, 
         null=True,
         help_text="The purpose of the visit (e.g., Internet, Print)."
