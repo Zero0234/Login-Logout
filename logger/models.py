@@ -2,7 +2,7 @@ from django.db import models
 from django.core.exceptions import ValidationError
 from django.core.validators import RegexValidator
 
-alpha_only = RegexValidator(r'^[a-zA-Z ]*$', 'Only letters and spaces are allowed.')
+alpha_only = RegexValidator(r'^[a-zA-Z \.\-ñÑ]*$', 'Only letters and spaces are allowed.')
 
 numeric_validator = RegexValidator(
     regex=r'^\d{8}$', 

@@ -44,7 +44,7 @@
         </div>
 
         <div id="name-section">
-            <input type="text" name="name" id="name_field" placeholder="Full Name" autocomplete="off" oninput="this.value = this.value.replace(/[0-9]/g, '');" value="{{ name_val }}">
+            <input type="text" name="name" id="name_field" placeholder="Full Name" autocomplete="off" oninput="this.value = this.value.replace(/[^a-zA-Z\s.\-ñÑ]/g, '');" value="{{ name_val }}">        
         </div>
 
         <div id="id-section">
@@ -109,6 +109,10 @@
 </div>
 
 <script>
+    if (window.history.replaceState) {
+        window.history.replaceState(null, null, window.location.href);
+    }
+    
     function toggleFields(role, isInitialLoad = false) {
         const idSection = document.getElementById('id-section');
         const nameSection = document.getElementById('name-section');
