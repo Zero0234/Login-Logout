@@ -1,25 +1,29 @@
 body {
-    background-attachment: fixed;
-    background-image: 
-        linear-gradient(rgba(255, 255, 255, 0.15) 1px, transparent 1px),
-        linear-gradient(90deg, rgba(255, 255, 255, 0.15) 1px, transparent 1px),
-        linear-gradient(135deg, #5de0e6 0%, #004aad 100%);
-    background-size: 30px 30px, 30px 30px, 100% 100%;
-    background-position: center center;
     min-height: 100vh;
     margin: 0;
+    background: linear-gradient(180deg, #189ada 0%, #051642 100%) !important;
     display: flex;
-    align-items: center;
     justify-content: center;
-    font-family: sans-serif;
-    font-size: 22px;
+    align-items: center;
+    overflow: hidden;
+}
+
+#network-canvas {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    z-index: -1; 
+    background: transparent;
+    display: block;
 }
 
 .card {
     width: 500px;
-    height: 500px;
+    height: 510px;
     padding: 30px;
-    margin: 40px auto;
+    margin: 0;
     background: rgb(255, 255, 255);
     border-radius: 20px;
     border: 1px solid rgba(12, 45, 117, 0.432);
@@ -56,7 +60,7 @@ body {
     align-items: center;
     justify-content: center; 
     gap: 15px;               
-    margin: -20px 0;         
+    margin: -15px 0;         
     width: 100%;
 }
 
@@ -79,7 +83,7 @@ body {
 }
 
 .role-buttons label:has(input[type="radio"]:checked) {
-    background: linear-gradient(135deg, #5de0e6 0%, #004aad 100%);
+    background: linear-gradient(180deg, #189ada 0%, #1b336f 100%);
     color: #ffffff;
     box-shadow: 0 4px 15px rgba(0, 74, 173, 0.3);
 }
@@ -100,7 +104,7 @@ body {
 #name-section input, 
 #id-section input {
     width: 100%;                  
-    max-width: 300px;             
+    max-width: 380px;             
     padding: 15px 20px;           
     margin: 30px auto;            
     font-size: 16px;
@@ -140,13 +144,7 @@ body {
     font-size: 16px;
     box-shadow: 0 0.5em 1em -0.3em hsla(224, 62%, 51%, 0.4);
     transition: transform 0.2s, opacity 0.2s;
-
-    background: linear-gradient(
-        135deg,
-        rgb(93, 224, 230) 0%,
-        rgb(0, 74, 173) 100%
-    );
-}
+}  
 
 #login-button label:hover {
     transform: scale(1.04);
@@ -209,13 +207,11 @@ body {
 .modal-actions {
     display: grid !important;
     grid-template-columns: repeat(2, 1fr) !important; 
-    gap: 8px !important;                
-    
+    gap: 8px !important;                  
     width: 90% !important; 
-    max-width: 380px !important;
-    
-    margin: 20px auto 0 auto !important; 
-    
+    max-width: 380px !important;   
+    margin: 20px auto 0 auto !important;
+    margin-top: 10px !important;  
     box-sizing: border-box !important;
     padding: 0 !important;
 }
@@ -236,7 +232,7 @@ body {
 }
 
 .modal-actions .btn-primary {
-    background: linear-gradient(135deg, #5de0e6 0%, #004aad 100%) !important;
+    background: linear-gradient(180deg, #189ada 0%, #1b336f 100%) !important;
 }
 
 .modal-actions .btn-primary:hover {
@@ -244,7 +240,7 @@ body {
 }
 
 .modal-actions .btn-secondary {
-    background: linear-gradient(135deg, #5de0e6 0%, #004aad 100%) !important;
+    background: linear-gradient(180deg, #189ada 0%, #1b336f 100%) !important;
     grid-column: span 2 !important; /* Forces it to stretch across the bottom row */
 }
 
@@ -269,10 +265,10 @@ body {
 }
 
 .modal-actions .purpose-btn {
-    background: #edeaea !important; 
+    background: whitesmoke !important; 
     color: #010315 !important; 
     transition: all 0.3s ease;
-    box-shadow: rgba(0, 0, 0, 0.35) 0px 5px 15px;
+    box-shadow: rgba(0, 0, 0, 0.16) 0px 3px 6px, rgba(0, 0, 0, 0.23) 0px 3px 6px;
     border: 1px solid rgb(147, 147, 147);
     user-select:none;
 }
@@ -282,7 +278,7 @@ body {
 }
 
 .modal-actions .purpose-btn.selected {
-    background: linear-gradient(135deg, #5de0e6 0%, #004aad 100%) !important;
+    background: linear-gradient(180deg, #189ada 0%, #1b336f 100%) !important;
     color: #ffffff !important;
     box-shadow: 0 4px 15px rgba(0, 74, 173, 0.3);
     transform: scale(0.95); 

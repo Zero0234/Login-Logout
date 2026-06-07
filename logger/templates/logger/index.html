@@ -22,6 +22,8 @@
     <img src="{% static 'css/Columban Logo (1).png' %}" alt="Columban College Logo">
 </a>
 
+<canvas id="network-canvas"></canvas>
+
 <div class="site-footer">
     <p>&copy; 2026 Columban College Inc. All rights reserved.</p>
     <p class="developer-credit">Internet Lab Logger | Developed by Khyl Selwyn Nucum & Emmanuel Piolo Briones</p>
@@ -61,7 +63,7 @@
                 <button type="button" onclick="togglePurpose(this, 'MS Account Setup / Update')" class="btn purpose-btn"><i class="fab fa-windows"></i> MS Account Setup / Update</button>
             </div>
             
-            <button type="button" id="final-submit-btn" onclick="submitFinalEntry()" style="margin: 20px auto 0 auto;; width: 65%; background: linear-gradient(135deg, #5de0e6 0%, #004aad 100%); color: white; padding: 12px; border: none; border-radius: 8px; font-size: 16px; font-weight: bold; cursor: pointer; display: flex; justify-content: center; align-items: center; gap: 8px; user-select:none;">
+            <button type="button" id="final-submit-btn" onclick="submitFinalEntry()" style="margin: 20px auto 0 auto;; width:380px; background: linear-gradient(180deg, #189ada 0%, #1b336f 100%); color: white; padding: 12px; border: none; border-radius: 8px; font-size: 16px; font-weight: bold; cursor: pointer; display: flex; justify-content: center; align-items: center; gap: 8px; user-select:none;">
                 <i class="fas fa-check-circle"></i> Submit Entry
             </button>
         </div>
@@ -112,6 +114,113 @@
     if (window.history.replaceState) {
         window.history.replaceState(null, null, window.location.href);
     }
+
+    // --- HEX MATRIX BACKGROUND LOGIC ---
+    const canvas = document.getElementById('network-canvas');
+    const ctx = canvas.getContext('2d');
+    let width, height;
+    
+    // Customize your grid here!
+    const hexRadius = 15; // Size of the hexagons
+    const themeColor = '255, 255, 255'; // Set to pure white to pop against your new blue gradient!
+    let hexes = [];
+
+    // 1. The Hexagon Blueprint
+    class Hex {
+        constructor(x, y) {
+            this.x = x;
+            this.y = y;
+            // Start very dim
+            this.opacity = Math.random() * 0.05;
+            // Pick a target immediately so it starts moving
+            this.pickNewTarget(); 
+            // How fast it fades in and out
+            this.pulseSpeed = 0.0005 + Math.random() * 0.0015; 
+        }
+
+        update() {
+            if (this.opacity < this.targetOpacity) {
+                this.opacity += this.pulseSpeed;
+                if (this.opacity >= this.targetOpacity) this.pickNewTarget();
+            } else if (this.opacity > this.targetOpacity) {
+                this.opacity -= this.pulseSpeed;
+                if (this.opacity <= this.targetOpacity) this.pickNewTarget();
+            }
+        }
+
+        pickNewTarget() {
+            if (Math.random() < 0.3) {
+                this.targetOpacity = 0.1 + Math.random() * 0.1; // Bright pulse
+            } else {
+                this.targetOpacity = 0.005 + Math.random() * 0.01; // Dim resting state
+            }
+        }
+
+        draw() {
+            ctx.beginPath();
+            for (let i = 0; i < 6; i++) {
+                const angle = (Math.PI / 3) * i - Math.PI / 6;
+                const hx = this.x + hexRadius * Math.cos(angle);
+                const hy = this.y + hexRadius * Math.sin(angle);
+                if (i === 0) ctx.moveTo(hx, hy);
+                else ctx.lineTo(hx, hy);
+            }
+            ctx.closePath();
+            
+            ctx.strokeStyle = `rgba(${themeColor}, ${this.opacity})`;
+            ctx.lineWidth = 1;
+            ctx.stroke();
+
+            ctx.fillStyle = `rgba(${themeColor}, ${this.opacity * 0.15})`;
+            ctx.fill();
+        }
+    }
+
+    // 2. Math to perfectly stack the hexagons
+    function initGrid() {
+        hexes = [];
+        const hexWidth = Math.sqrt(3) * hexRadius;
+        const rowHeight = 1.5 * hexRadius;
+        
+        const cols = Math.ceil(width / hexWidth) + 1;
+        const rows = Math.ceil(height / rowHeight) + 1;
+
+        for (let r = 0; r < rows; r++) {
+            for (let c = 0; c < cols; c++) {
+                let x = c * hexWidth;
+                let y = r * rowHeight;
+                if (r % 2 !== 0) x += hexWidth / 2;
+                
+                hexes.push(new Hex(x, y));
+            }
+        }
+    }
+
+    // 3. The Animation Loop
+    function animate() {
+        // THE FIX: Use clearRect to wipe the frame transparently so your CSS gradient shows!
+        ctx.clearRect(0, 0, width, height);
+        
+        hexes.forEach(hex => {
+            hex.update();
+            hex.draw();
+        });
+        
+        requestAnimationFrame(animate);
+    }
+
+    // 4. Handle Window Resizing
+    function resizeCanvas() {
+        width = canvas.width = window.innerWidth;
+        height = canvas.height = window.innerHeight;
+        initGrid();
+    }
+
+    window.addEventListener('resize', resizeCanvas);
+
+    // Start the engine!
+    resizeCanvas(); 
+    animate();
     
     function toggleFields(role, isInitialLoad = false) {
         const idSection = document.getElementById('id-section');
