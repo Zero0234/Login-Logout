@@ -6,6 +6,7 @@ body {
     justify-content: center;
     align-items: center;
     overflow: hidden;
+    font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 }
 
 #network-canvas {
@@ -163,7 +164,7 @@ body {
 }
 
 .server-error, #js-message {
-    color: #ff4d4d;
+    color: #db1313;
     background: rgb(255, 255, 255);
     padding: 10px 43px;
     border: 1px solid rgba(12, 45, 117, 0.432);
